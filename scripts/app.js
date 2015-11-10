@@ -11,8 +11,8 @@ app.directive("gameboard", function() {
             image.src = "assets/ClueBoard.PNG";
             var radius = 12; 
             
-            var MapSizeX = 3;
-            var MapSizeY = 3;
+            var MapSizeX = 5;
+            var MapSizeY = 5;
             
             var WIDTH = canvas.width;
             var HEIGHT = canvas.height;
@@ -182,7 +182,7 @@ app.directive("gameboard", function() {
                         break;
                     case 83:            //S
                     case 40:            //Down Arrow
-                        if (player.y < 4 && player.x%2 == 0) { 
+                        if (player.y < MapSizeY-1 && player.x%2 == 0) { 
                             player.y++;
                             console.log('moving down!');
                         }
@@ -196,7 +196,7 @@ app.directive("gameboard", function() {
                         break;
                     case 68:            //D
                     case 39:            //Right Arrow
-                        if (player.x < 4 && player.y%2 == 0) { 
+                        if (player.x < MapSizeX-1 && player.y%2 == 0) { 
                             player.x++;
                             console.log('moving right!');
                         }

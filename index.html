@@ -1,15 +1,34 @@
 <!DOCTYPE html>
 <html ng-app="clueApp">
     <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+        
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        
         <script src="scripts/app.js"></script>
+        <script src="scripts/gameboard.js"></script>
+        <script src="scripts/services.js"></script>
     </head>
-<body>
+<body ng-controller="ClueCtrl">
     <h1>ClueLess</h1>
-    <canvas gameboard id="myCanvas" width="800" height="600" 
-    style="border:1px solid #d3d3d3;">
-    Your browser does not support the HTML5 canvas tag.
-    </canvas>
-    <p>Use WASD or Arrow Keys to move.</p>
+    <div ng-if="!gameStart">
+        <h4>Select your character:</h4>
+        <div class="btn-group" role="group" aria-label="..." ng-repeat="piece in gamePieces">
+            <button type="button" class="btn btn-default" ng-click="pieceSelected(piece); isDisabled=true" ng-disabled="isDisabled">
+                {{piece.name}}
+            </button>
+        </div>
+        <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="playerPieces.length==0">Start Game</button>
+    </div>
+    <div ng-if="gameStart">
+        <canvas gameboard id="myCanvas" players="playerPieces" width="800" height="600" 
+        style="border:1px solid #d3d3d3;">
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+        <h4>{{curPlayer.name}}'s Turn</h4>
+        <p>Use WASD or Arrow Keys to move.</p>
+    </div>
 </body>
 </html>

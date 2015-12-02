@@ -1,6 +1,6 @@
 var app = angular.module('clueApp', []);
 
-app.controller("ClueCtrl", function($scope, RestService) {
+app.controller("clueCtrl", function($scope, RestService) {
     $scope.gameStart = false;
     $scope.player = {};
     $scope.gamePieces = RestService.getGamePieces();
@@ -9,15 +9,15 @@ app.controller("ClueCtrl", function($scope, RestService) {
     var MapSizeY = 5;
     
     $scope.pieceSelected = function(piece) {
-        RestService.setPlayerPiece(piece);
+        RestService.addPlayerPiece(piece);
     };
     $scope.startGame = function() {
         $scope.playerPieces = RestService.getPlayerPieces();
         $scope.gameStart=true;
-        PlayClue();
+        playClue();
     };
     
-    function PlayClue() {
+    function playClue() {
         $scope.curPlayer = $scope.playerPieces[0]; //Miss Scarlet goes first
         
          //using window because element binding won't work
@@ -51,7 +51,7 @@ app.controller("ClueCtrl", function($scope, RestService) {
         });       
     }
     /*
-        Need to add: checkMove() to check if hallway is occupied
+        Need to add: checkMove() to check if hallway is occupied, handle secret pathways
     */
     
     //update coordinates of player, curPlayer is now next player to update turn
@@ -66,7 +66,8 @@ app.controller("ClueCtrl", function($scope, RestService) {
             $scope.curPlayer.x++;
             
         console.log($scope.curPlayer.name + ' is moving ' + direction + '!');
-
+        RestService.updatePlayerPieces($scope.curPlayer);
+        
         var index = $scope.playerPieces.indexOf($scope.curPlayer) + 1;
         if (index>$scope.playerPieces.length-1) 
             index = 0;

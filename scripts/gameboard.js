@@ -16,6 +16,11 @@ app.directive("gameboard", function() {
             var WIDTH = canvas.width;
             var HEIGHT = canvas.height;
             
+            /*
+            Need to add: handle multiple circles in a room, a button/way to take the secret pathway, use images for game pieces
+            */
+            
+            //these values are rough and set to line up approximately with the center of the rooms
             var leftBorder = WIDTH / 4 + 57;
             var rightBorder = 3*WIDTH / 4 - 55;
             var topBorder = HEIGHT / 4 + 7;
@@ -140,7 +145,6 @@ app.directive("gameboard", function() {
                     ctx.beginPath();
                     ctx.arc(Map[player.y][player.x].x, Map[player.y][player.x].y,radius,0,2*Math.PI);
                     ctx.stroke();
-    //                ctx.arc(Hallways.BD.x, Hallways.BD.y,radius,0,2*Math.PI);
                     ctx.fillStyle = player.color;
                     ctx.fill();
                 }

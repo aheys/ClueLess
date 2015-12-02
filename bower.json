@@ -1,0 +1,24 @@
+{
+  "name": "clueLess",
+  "homepage": "https://github.com/en-604-pionNeers/clueLess-client",
+  "authors": [
+    "Andrew Heys <aheys13@gmail.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.1.4"
+  }
+}

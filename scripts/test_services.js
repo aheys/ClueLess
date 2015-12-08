@@ -8,39 +8,45 @@ app.factory('TestService', function() {
     var gamePieces = [
                 {
                     name: "Miss Scarlet",
-                    color: "red",
+                    position: 0,
+                    color: "orange",
                     x: 3,
                     y: 0
                 },
                 {
                     name: "Col. Mustard",
+                    position: 1,
                     color: "yellow",
                     x: 4,
                     y: 1
                 },
                 {
-                    name: "Prof. Plum",
-                    color: "plum",
-                    x: 0,
-                    y: 1
-                },
-                {
-                    name: "Mrs. Peacock",
-                    color: "pink",
-                    x: 0,
-                    y: 3
+                    name: "Mrs. White",
+                    position: 2,
+                    color: "white",
+                    x: 3,
+                    y: 4
                 },
                 {
                     name: "Mr. Green",
-                    color: "green",
+                    position: 3,
+                    color: "lightgreen",
                     x: 1,
                     y: 4
                 },
                 {
-                    name: "Mrs. White",
-                    color: "white",
-                    x: 3,
-                    y: 4
+                    name: "Mrs. Peacock",
+                    position: 4,
+                    color: "#0066FF",
+                    x: 0,
+                    y: 3
+                },
+                {
+                    name: "Prof. Plum",
+                    position: 5,
+                    color: "purple",
+                    x: 0,
+                    y: 1
                 }
             ];
     var players = [];

@@ -30,12 +30,18 @@
         </div>
         <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="playerPieces.length==0">Start Game</button>
     </div>
-    <div ng-if="gameStart" class="test">
+    <div ng-if="gameStart">
         <canvas gameboard id="myCanvas" players="players">
             Your browser does not support the HTML5 canvas tag.
         </canvas>
         <h4>{{curPlayer.name}}'s Turn</h4>
         <p>Use WASD or Arrow Keys to move.</p>
+        <ul ng-repeat="player in players">
+            <li>
+                <div class="color-box" style="background:{{player.color}}"></div>
+                {{player.name}}
+            </li>
+        </ul>
     </div>
 </body>
 </html>

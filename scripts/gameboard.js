@@ -9,17 +9,32 @@ app.directive("gameboard", function() {
             
             var canvas = $element[0];
             var ctx = canvas.getContext('2d');
-            var image = new Image();
-            image.src = "assets/ClueBoard.PNG";
-            var radius = 12; 
             
+            var gameboard = new Image();
+            gameboard.src = "assets/ClueBoard.PNG";
+            
+            var imageSrc = new Array();
+            imageSrc[0] = "assets/gamepieces/pieceRed_border00.png";
+            imageSrc[1] = "assets/gamepieces/pieceYellow_border00.png";
+            imageSrc[2] = "assets/gamepieces/pieceWhite_border00.png";
+            imageSrc[3] = "assets/gamepieces/pieceGreen_border00.png";
+            imageSrc[4] = "assets/gamepieces/pieceBlue_border00.png";
+            imageSrc[5] = "assets/gamepieces/piecePurple_border00.png";
+            
+            var gamePieces = [];
+            for (x=0; x<imageSrc.length; x++) {
+                var img = new Image();
+                img.src = imageSrc[x];
+                gamePieces.push(img);
+            }
+                                    
             canvas.width = 800;
             canvas.height = 600;
             var WIDTH = canvas.width;
             var HEIGHT = canvas.height;
             
             /*
-            Need to add: handle multiple circles in a room, a button/way to take the secret pathway, use images for game pieces
+            Need to add: handle multiple pieces in a room, a button/way to take the secret pathway
             */
             
             //these values are rough and set to line up approximately with the center of the rooms
@@ -129,51 +144,28 @@ app.directive("gameboard", function() {
                 [Rooms.Conservatory, Hallways.CB, Rooms.BallRoom, Hallways.BK, Rooms.Kitchen]
             ];
 
-            image.onload = function() {
+            window.onload = function() {
                 render();
             };
 
             function render() {
                 ctx.clearRect(0, 0, WIDTH, HEIGHT);
-                ctx.drawImage(image, 
-                              WIDTH / 2 - image.width / 2, 
-                              HEIGHT / 2 - image.height / 2);
-                drawCircle();
-//                drawLines();
-            }
-            function drawCircle() {
+                
+                //draw the gameboard
+                ctx.drawImage(gameboard, 
+                              WIDTH / 2 - gameboard.width / 2, 
+                              HEIGHT / 2 - gameboard.height / 2);
+                
+                //loop through players and draw each piece
                 for (var i in $scope.players) {
                     var player = $scope.players[i];
-                    ctx.beginPath();
-                    ctx.arc(Map[player.y][player.x].x, Map[player.y][player.x].y,radius,0,2*Math.PI);
-                    ctx.stroke();
-                    ctx.fillStyle = player.color;
-                    ctx.fill();
+                    ctx.drawImage(gamePieces[player.position], 
+                                  Map[player.y][player.x].x - gamePieces[0].width/2 + 12, //offset of 12 due to resizing from 64 px to 40px
+                                  Map[player.y][player.x].y - gamePieces[0].height/2 + 12, 
+                                  40, 40)
                 }
             }
-            
-            function drawLines() {
-                ctx.beginPath();
-                
-                //vertical lines
-                ctx.moveTo(centerX, 0);
-                ctx.lineTo(centerX, HEIGHT);
-                ctx.moveTo(leftBorder, 0);
-                ctx.lineTo(leftBorder, HEIGHT);
-                ctx.moveTo(rightBorder, 0);
-                ctx.lineTo(rightBorder, HEIGHT);
-                
-                //horizontal lines
-                ctx.moveTo(0, centerY);
-                ctx.lineTo(WIDTH, centerY);
-                ctx.moveTo(0, topBorder);
-                ctx.lineTo(WIDTH, topBorder);
-                ctx.moveTo(0, bottomBorder);
-                ctx.lineTo(WIDTH, bottomBorder);
-                
-                ctx.stroke();
-            }
-
+    
             var FPS = 30;
             setInterval(function() {
               render();

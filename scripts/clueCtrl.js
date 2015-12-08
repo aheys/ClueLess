@@ -12,7 +12,7 @@ app.controller("clueCtrl", function($scope, TestService, RestService) {
     
     $scope.initGame = function() {
         $scope.players = TestService.getPlayers();
-        var game_board = RestService.get('game_board');
+//        var game_board = RestService.get('game_board');
 //        console.log(game_board);
 //        if (game_board.$$state.status == 404)
 //            console.log('error!')
@@ -24,7 +24,7 @@ app.controller("clueCtrl", function($scope, TestService, RestService) {
         playClue();
         
         //create game_board
-        RestService.post('game_board');
+//        RestService.post('game_board');
     };
     
     function playClue() {

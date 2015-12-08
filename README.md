@@ -1,3 +1,9 @@
 # clueLess-client
 
-Everything on clueLess-client currently runs locally. To run, clone the repository and simply open the index.html
+Developer Notes:
+
+Download an IDE of choice (i.e. brackets.io)
+
+Set up server locally or use the heroku cloud server (uses this by default)
+
+Use an IDE to launch index.html

@@ -7,9 +7,16 @@
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
         
+        <!-- Restangular -->
+        <script src="bower_components/lodash/lodash.js"></script>
+        <script src="bower_components/restangular/dist/restangular.js"></script>
+        
+        <!-- Source Scripts -->
         <script src="scripts/app.js"></script>
         <script src="scripts/gameboard.js"></script>
+        <script src="scripts/test_services.js"></script>
         <script src="scripts/services.js"></script>
+        <script src="scripts/clueCtrl.js"></script>
     </head>
 <body ng-controller="clueCtrl">
     <h1>ClueLess</h1>
@@ -23,7 +30,7 @@
         <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="playerPieces.length==0">Start Game</button>
     </div>
     <div ng-if="gameStart">
-        <canvas gameboard id="myCanvas" players="playerPieces" width="800" height="600" 
+        <canvas gameboard id="myCanvas" players="players" width="800" height="600" 
         style="border:1px solid #d3d3d3;">
             Your browser does not support the HTML5 canvas tag.
         </canvas>

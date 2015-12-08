@@ -1,0 +1,14 @@
+canvas {
+    border:1px solid #d3d3d3;
+}
+
+.centered {
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 800px;
+}
+
+.center-text {
+    text-align: center;
+}

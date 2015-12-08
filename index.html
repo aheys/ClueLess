@@ -2,6 +2,7 @@
 <html ng-app="clueApp">
     <head>
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="stylesheet.css">
         
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
@@ -18,10 +19,10 @@
         <script src="scripts/services.js"></script>
         <script src="scripts/clueCtrl.js"></script>
     </head>
-<body ng-controller="clueCtrl">
-    <h1>ClueLess</h1>
+<body ng-controller="clueCtrl" class="centered">
+    <h1 class="center-text">ClueLess</h1>
     <div ng-if="!gameStart">
-        <h4>Select your character:</h4>
+        <h4 class="center-text">Select your character:</h4>
         <div class="btn-group" role="group" aria-label="..." ng-repeat="piece in gamePieces">
             <button type="button" class="btn btn-default" ng-click="pieceSelected(piece); isDisabled=true" ng-disabled="isDisabled">
                 {{piece.name}}
@@ -29,9 +30,8 @@
         </div>
         <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="playerPieces.length==0">Start Game</button>
     </div>
-    <div ng-if="gameStart">
-        <canvas gameboard id="myCanvas" players="players" width="800" height="600" 
-        style="border:1px solid #d3d3d3;">
+    <div ng-if="gameStart" class="test">
+        <canvas gameboard id="myCanvas" players="players">
             Your browser does not support the HTML5 canvas tag.
         </canvas>
         <h4>{{curPlayer.name}}'s Turn</h4>

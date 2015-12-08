@@ -13,6 +13,8 @@ app.directive("gameboard", function() {
             image.src = "assets/ClueBoard.PNG";
             var radius = 12; 
             
+            canvas.width = 800;
+            canvas.height = 600;
             var WIDTH = canvas.width;
             var HEIGHT = canvas.height;
             

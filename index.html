@@ -28,7 +28,9 @@
                 {{piece.name}}
             </button>
         </div>
-        <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="playerPieces.length==0">Start Game</button>
+        <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="players.length<1">Start Game</button>
+        <p ng-if="players.length<1" class="text-warning center-text">2 players are required to start</p>
+        
     </div>
     <div ng-if="gameStart">
         <canvas gameboard id="myCanvas" players="players">

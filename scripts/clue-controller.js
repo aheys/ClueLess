@@ -26,6 +26,11 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         //Get current gameboard, if none exists createGameBoard() is called
         //after getting the gameboard, getPlayers() is called
         self.getGameBoard();
+        
+        self.moveUpValid = false;
+        self.moveDownValid = false;
+        self.moveLeftValid = false; 
+        self.moveRightValid = false; 
     };
     
     self.startGame = function() {
@@ -113,32 +118,32 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     
     function playClue() {
         self.curPlayer = self.players[0]; //Miss Scarlet goes first
-        
-         //using window because element binding won't work
+
+        //using window because element binding won't work
         window.addEventListener("keydown", function(event) { 
             switch(event.keyCode) {
                 case 87:            //W
                 case 38:            //Up Arrow
                     if (self.curPlayer.y > 0 && self.curPlayer.x%2 == 0) { //cannot move up if at top or in hallways at x=1 or 3 
-                        makeMove('up');
+                        self.makeMove('up');
                     }
                     break;
                 case 83:            //S
                 case 40:            //Down Arrow
                     if (self.curPlayer.y < MapSizeY-1 && self.curPlayer.x%2 == 0) { 
-                        makeMove('down');
+                        self.makeMove('down');
                     }
                     break;
                 case 65:            //A
                 case 37:            //Left Arrow
                     if (self.curPlayer.x > 0 && self.curPlayer.y%2 == 0) { 
-                        makeMove('left');
+                        self.makeMove('left');
                     }
                     break;
                 case 68:            //D
                 case 39:            //Right Arrow
                     if (self.curPlayer.x < MapSizeX-1 && self.curPlayer.y%2 == 0) { 
-                        makeMove('right');
+                        self.makeMove('right');
                     }
                     break;
             }              
@@ -148,8 +153,9 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         Need to add: checkMove() to check if hallway is occupied, handle secret pathways
     */
     
+    
     //update coordinates of player, curPlayer is now next player to update turn
-    function makeMove(direction) {
+    self.makeMove = function (direction) {
         if (direction == "up")
             self.curPlayer.y--;
         else if (direction == "down")
@@ -169,6 +175,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         $scope.$apply(function () {
             self.curPlayer = self.players[index];
         });
+        
     }
     
     self.initGame();

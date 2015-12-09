@@ -1,4 +1,4 @@
-app.controller("clueCtrl", function($scope, TestService, RestService) {
+app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     $scope.gameStart = false;
     $scope.player = {};
     $scope.gamePieces = TestService.getGamePieces();
@@ -7,17 +7,13 @@ app.controller("clueCtrl", function($scope, TestService, RestService) {
     var MapSizeY = 5;
     
     $scope.pieceSelected = function(player) {
-        TestService.addPlayer(player);
+        TestService.testAddPlayer(player);
     };
     
     $scope.initGame = function() {
-        $scope.players = TestService.getPlayers();
-//        var game_board = RestService.get('game_board');
-//        console.log(game_board);
-//        if (game_board.$$state.status == 404)
-//            console.log('error!')
+        $scope.players = TestService.testGetPlayers();
+        $scope.getGameBoard();
     };
-    $scope.initGame();
     
     $scope.startGame = function() {
         $scope.gameStart=true;
@@ -25,6 +21,83 @@ app.controller("clueCtrl", function($scope, TestService, RestService) {
         
         //create game_board
 //        RestService.post('game_board');
+    };
+    
+    $scope.getGameBoard = function () {
+        $log.debug('Getting gameboard...');
+        this.promise = RestService.get('game_board');
+        this.promise.then(
+            function (response) {
+                $log.debug('Got gameboard ' + JSON.stringify(response));
+                $scope.game_board = response;
+                console.log(response);
+//                $scope.getPlayers();
+            },
+            function (error) {
+                $log.error('Error retrieving gameboard ' + JSON.stringify(error));
+                if (error.status == 404) {
+                    $scope.createGameBoard();
+                }
+            }
+        )
+    };
+    
+    $scope.createGameBoard = function () {
+        $log.debug('Getting gameboard...');
+        this.promise = RestService.post('game_board', '');
+        this.promise.then(
+            function (response) {
+                $log.debug('Created gameboard ' + JSON.stringify(response));
+                $scope.game_board = response;
+                console.log(response);
+//                $scope.getPlayers();
+            },
+            function (error) {
+                $log.error('Error creating gameboard ' + JSON.stringify(error));
+            }
+        )
+    };
+    
+    $scope.getPlayers = function () {
+        $log.debug('Getting players...');
+        this.promise = RestService.get('players');
+        this.promise.then(
+            function (response) {
+                $log.debug('Got players ' + JSON.stringify(response));
+                $scope.serverPlayers = response.data.players;
+                console.log($scope.serverPlayers);
+            },
+            function (error) {
+                $log.error('Error retrieving players ' + JSON.stringify(error));
+            }
+        )
+    };
+    
+    $scope.addPlayer = function () {
+        $log.debug('Add player...');
+        this.promise = RestService.put('add_player');
+        this.promise.then(
+            function (response) {
+                $log.debug('Added player ' + JSON.stringify(response));
+                console.log(response);
+            },
+            function (error) {
+                $log.error('Error retrieving players ' + JSON.stringify(error));
+            }
+        )
+    };
+    
+    $scope.deleteGameBoard = function () {
+        $log.debug('Delete gameboard...');
+        this.promise = RestService.delete('game_board');
+        this.promise.then(
+            function (response) {
+                $log.debug('Deleted gameboard ' + JSON.stringify(response));
+            },
+            function (error) {
+                $log.error('Error deleted gameboard ' + JSON.stringify(error));
+            }
+        )   
     };
     
     function playClue() {
@@ -87,4 +160,5 @@ app.controller("clueCtrl", function($scope, TestService, RestService) {
         });
     }
     
+    $scope.initGame();
 })

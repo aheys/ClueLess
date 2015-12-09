@@ -54,11 +54,11 @@ app.factory('TestService', function() {
         getGamePieces: function() {   
             return gamePieces;
         },
-        addPlayer: function(player) {
+        testAddPlayer: function(player) {
             if (players.indexOf(player) == -1)
                 players.push(player);
         },
-        getPlayers: function() {
+        testGetPlayers: function() {
             return players;
         },
         updatePlayers: function(player) {

@@ -45,16 +45,16 @@
             <div class="btn-toolbar" role="toolbar" aria-label="..." style="position: relative; top: -50px; left: 10px">
                 <div class="btn-group" role="group" aria-label="...">
                     <!-- These don't work yet -->
-                    <button type="button" class="btn btn-primary" ng-disabled="!ctrl.moveLeftValid" ng-click="ctrl.makeMove()">
+                    <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('left')">
                         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
                     </button>
-                    <button type="button" class="btn btn-primary" ng-disabled="!ctrl.moveRightValid">
+                    <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('right')">
                         <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
                     </button>
-                    <button type="button" class="btn btn-primary" ng-disabled="!ctrl.moveUpValid">
+                    <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('up')">
                         <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                     </button>
-                    <button type="button" class="btn btn-primary" ng-disabled="!ctrl.moveDownValid">
+                    <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('down')">
                         <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -62,21 +62,21 @@
                     <button type="button" class="btn btn-info">Suggestion</button>
                 </div>
                 <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default">End Turn</button>
-                </div>
-                <div class="btn-group" role="group" aria-label="...">
                     <button type="button" class="btn btn-danger">Accusation</button>
                 </div>
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default">End Turn</button>
+                </div>
             </div>
-            <p>Left:{{ctrl.moveLeftValid}} Right:{{ctrl.moveRightValid}} Up:{{ctrl.moveUpValid}} Down:{{ctrl.moveDownValid}}</p>
-            <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
-            <p>Use WASD or Arrow Keys to move.</p>
-            <ul ng-repeat="player in ctrl.players">
-                <li>
-                    <div class="color-box" style="background:{{player.color}}"></div>
-                    {{player.name}}
-                </li>
-            </ul>
+            <div style="position: relative; top: -40px; left: 10px">
+                <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
+                <ul ng-repeat="player in ctrl.players">
+                    <li>
+                        <div class="color-box" style="background:{{player.color}}"></div>
+                        {{player.name}}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </body>

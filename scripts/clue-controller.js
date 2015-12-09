@@ -35,8 +35,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     
     self.startGame = function() {
         self.gameStart=true;
-        playClue();
-        
+        self.curPlayer = self.players[0]; //Miss Scarlet goes first        
     };
     
     self.getGameBoard = function () {
@@ -116,39 +115,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         )   
     };
     
-    function playClue() {
-        self.curPlayer = self.players[0]; //Miss Scarlet goes first
 
-        //using window because element binding won't work
-        window.addEventListener("keydown", function(event) { 
-            switch(event.keyCode) {
-                case 87:            //W
-                case 38:            //Up Arrow
-                    if (self.curPlayer.y > 0 && self.curPlayer.x%2 == 0) { //cannot move up if at top or in hallways at x=1 or 3 
-                        self.makeMove('up');
-                    }
-                    break;
-                case 83:            //S
-                case 40:            //Down Arrow
-                    if (self.curPlayer.y < MapSizeY-1 && self.curPlayer.x%2 == 0) { 
-                        self.makeMove('down');
-                    }
-                    break;
-                case 65:            //A
-                case 37:            //Left Arrow
-                    if (self.curPlayer.x > 0 && self.curPlayer.y%2 == 0) { 
-                        self.makeMove('left');
-                    }
-                    break;
-                case 68:            //D
-                case 39:            //Right Arrow
-                    if (self.curPlayer.x < MapSizeX-1 && self.curPlayer.y%2 == 0) { 
-                        self.makeMove('right');
-                    }
-                    break;
-            }              
-        });       
-    }
     /*
         Need to add: checkMove() to check if hallway is occupied, handle secret pathways
     */
@@ -156,14 +123,42 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     
     //update coordinates of player, curPlayer is now next player to update turn
     self.makeMove = function (direction) {
-        if (direction == "up")
-            self.curPlayer.y--;
-        else if (direction == "down")
-            self.curPlayer.y++;
-        else if (direction == "left")
-            self.curPlayer.x--;
-        else  //right
-            self.curPlayer.x++;
+        if (direction == "up"){
+            if (self.curPlayer.y > 0 && self.curPlayer.x%2 == 0){
+                self.curPlayer.y--;
+            }
+            else{
+                console.log('invalid move');
+                return;
+            }
+        }
+        else if (direction == "down") {
+            if (self.curPlayer.y < MapSizeY-1 && self.curPlayer.x%2 == 0) {
+                self.curPlayer.y++;
+            }
+            else {
+                console.log('invalid move');
+                return;
+            }
+        }
+        else if (direction == "left") {
+            if (self.curPlayer.x > 0 && self.curPlayer.y%2 == 0) {
+                self.curPlayer.x--;
+            }
+            else {
+                console.log('invalid move');
+                return;
+            }
+        }
+        else if (direction == "right") {
+            if (self.curPlayer.x < MapSizeX-1 && self.curPlayer.y%2 == 0) {
+                self.curPlayer.x++;
+            }
+            else {
+                console.log('invalid move');
+                return;
+            }
+        }
             
         console.log(self.curPlayer.name + ' is moving ' + direction + '!');
         TestService.updatePlayers(self.curPlayer);
@@ -172,10 +167,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         if (index>self.players.length-1) 
             index = 0;
         
-        $scope.$apply(function () {
-            self.curPlayer = self.players[index];
-        });
-        
+        self.curPlayer = self.players[index];
     }
     
     self.initGame();

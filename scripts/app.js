@@ -1,4 +1,4 @@
-var app = angular.module('clueApp', ['restangular']);
+var app = angular.module('clueApp', ['restangular', 'ngAnimate', 'cgBusy']);
 
 // route configurations
 app.config(['RestangularProvider', function (RestangularProvider) {

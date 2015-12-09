@@ -3,10 +3,15 @@
     <head>
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
         <link rel="stylesheet" href="stylesheet.css">
+        <link rel="stylesheet" href="bower_components/angular-busy/dist/angular-busy.css">
+        
         
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        
+        <script src="bower_components/angular-animate/angular-animate.js"></script>
+        <script src="bower_components/angular-busy/dist/angular-busy.js"></script>
         
         <!-- Restangular -->
         <script src="bower_components/lodash/lodash.js"></script>
@@ -15,35 +20,37 @@
         <!-- Source Scripts -->
         <script src="scripts/app.js"></script>
         <script src="scripts/gameboard.js"></script>
-        <script src="scripts/test_services.js"></script>
-        <script src="scripts/Services.js"></script>
-        <script src="scripts/ClueCtrl.js"></script>
+        <script src="scripts/test-services.js"></script>
+        <script src="scripts/services.js"></script>
+        <script src="scripts/clue-controller.js"></script>
     </head>
-<body ng-controller="clueCtrl" class="centered">
-    <h1 class="center-text">ClueLess</h1>
-    <div ng-if="!gameStart">
-        <h4 class="center-text">Select your character:</h4>
-        <div class="btn-group" role="group" aria-label="..." ng-repeat="piece in gamePieces">
-            <button type="button" class="btn btn-default" ng-click="pieceSelected(piece); isDisabled=true" ng-disabled="isDisabled">
-                {{piece.name}}
-            </button>
+<body ng-controller="clueCtrl as ctrl" class="centered">
+    <div cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
+                   backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
+        <h1 class="center-text">ClueLess</h1>
+        <div ng-if="!ctrl.gameStart">
+            <h4 class="center-text">Select your character:</h4>
+            <div class="btn-group" role="group" aria-label="..." ng-repeat="piece in ctrl.gamePieces">
+                <button type="button" class="btn btn-default" ng-click="ctrl.pieceSelected(piece); isDisabled=true" ng-disabled="isDisabled">
+                    {{piece.name}}
+                </button>
+            </div>
+            <button type="button" class="btn btn-default" ng-click="ctrl.startGame()" ng-disabled="ctrl.players.length<2">Start Game</button>
+            <p ng-if="ctrl.players.length<2" class="text-warning center-text">2 players are required to start</p>
         </div>
-        <button type="button" class="btn btn-default" ng-click="startGame()" ng-disabled="players.length<1">Start Game</button>
-        <p ng-if="players.length<1" class="text-warning center-text">2 players are required to start</p>
-        
-    </div>
-    <div ng-if="gameStart">
-        <canvas gameboard id="myCanvas" players="players">
-            Your browser does not support the HTML5 canvas tag.
-        </canvas>
-        <h4>{{curPlayer.name}}'s Turn</h4>
-        <p>Use WASD or Arrow Keys to move.</p>
-        <ul ng-repeat="player in players">
-            <li>
-                <div class="color-box" style="background:{{player.color}}"></div>
-                {{player.name}}
-            </li>
-        </ul>
+        <div ng-if="ctrl.gameStart">
+            <canvas gameboard id="myCanvas" players="ctrl.players">
+                Your browser does not support the HTML5 canvas tag.
+            </canvas>
+            <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
+            <p>Use WASD or Arrow Keys to move.</p>
+            <ul ng-repeat="player in ctrl.players">
+                <li>
+                    <div class="color-box" style="background:{{player.color}}"></div>
+                    {{player.name}}
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>

@@ -1,6 +1,11 @@
 app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($http, $q, $log, Restangular) {
     
-    var url = 'https://clueless-server.herokuapp.com/';
+    //Heroku Server
+//    var url = 'https://clueless-server.herokuapp.com/';
+    
+    //Local Ruby Server
+    var url = 'http://localhost:3000/';
+    
     var services = {
 //        createGameboard: function() {
 //            $log.debug('creating /game_board...');
@@ -70,7 +75,7 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
                         deferredPromise.resolve(response);
                     },
                     function (error) {
-                        $log.error("error adding new data to table! " + name);
+                        $log.error("error adding new data to table " + name);
                         deferredPromise.reject(error);
                     });
                 return deferredPromise.promise;
@@ -89,7 +94,7 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
                         deferredPromise.resolve(response);
                     },
                     function (error) {
-                        $log.error("error adding new data to table! " + name);
+                        $log.error("error adding new data to table " + name);
                         deferredPromise.reject(error);
                     });
                 return deferredPromise.promise;

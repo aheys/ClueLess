@@ -5,7 +5,7 @@ app.factory('TestService', function() {
     Need to add: Eventually hook up with backend, add Restangular, moving piece should interact with a service, turns should have a service
     */
     
-    var gamePieces = [
+    var testGamePieces = [
                 {
                     name: "Miss Scarlet",
                     position: 0,
@@ -49,23 +49,23 @@ app.factory('TestService', function() {
                     y: 1
                 }
             ];
-    var players = [];
+    var testPlayers = [];
     var service = {
-        getGamePieces: function() {   
-            return gamePieces;
+        testGetGamePieces: function() {   
+            return testGamePieces;
         },
         testAddPlayer: function(player) {
-            if (players.indexOf(player) == -1)
-                players.push(player);
+            if (testPlayers.indexOf(player) == -1)
+                testPlayers.push(player);
         },
         testGetPlayers: function() {
-            return players;
+            return testPlayers;
         },
-        updatePlayers: function(player) {
-            for (var i=0; i<players.length; i++) {
-                if (player.name == players[i].name) {
-                    players[i].x = player.x;
-                    players[i].y = player.y;
+        testUpdatePlayers: function(player) {
+            for (var i=0; i<testPlayers.length; i++) {
+                if (player.name == testPlayers[i].name) {
+                    testPlayers[i].x = player.x;
+                    testPlayers[i].y = player.y;
                 }
             }
         }

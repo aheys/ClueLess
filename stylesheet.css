@@ -2,19 +2,16 @@ canvas {
     border:1px solid #d3d3d3;
 }
 
-.centered {
-    padding: 0;
-    margin: auto;
-    display: block;
-    width: 800px;
+ul {
+    margin-bottom: 30px;
 }
 
-.center-text {
-    text-align: center;
+li {
+    list-style-type: none;
 }
 
-li { 
-    display:inline-block;
+.legend { 
+/*    display:inline-block;*/
     margin-bottom:5px;  
 }
 
@@ -25,4 +22,27 @@ li {
     border-style: solid;
     border-color: rgba(0,0,0,.2);
     margin-right: 5px;
+}
+
+.btn-start {  
+    padding: 15px 22px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 6px;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.btn-toolbar {
+/*    This is not ideal way of positioning toolbar */
+    margin-top: -50px;
+    margin-bottom: 25px;
+    margin-left: 180px;
+}
+
+.sidebar {
+    margin-top: 100px;
 }

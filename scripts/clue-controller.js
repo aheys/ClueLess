@@ -8,21 +8,33 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     self.backdrop = true;
     self.promise = null;
     
-    
+    self.testMyPlayer = null;
     self.gameStart = false;
+    self.host = false;
     self.player = {};
-    self.gamePieces = TestService.getGamePieces();
+    self.testGamePieces = TestService.testGetGamePieces();
         
     var MapSizeX = 5;
     var MapSizeY = 5;
     
-    self.pieceSelected = function(player) {
-        TestService.testAddPlayer(player);
+    self.pieceSelected = function(piece) {
+        TestService.testAddPlayer(piece);
+        self.testPlayers = TestService.testGetPlayers();
+        self.testMyPlayer = piece;
+        
+        //first player to select a piece becomes 'host' and is the only player that can start the game
+        if (self.testMyPlayer == self.testPlayers[0]) {
+            self.host = true;
+        }
+        
+        //to be added
+        //self.addPlayer(piece.name);
+        //self.myPlayer=piece.name
     };
     
     self.initGame = function() {
         self.playerCount = 0;
-        self.players = TestService.testGetPlayers();
+        self.testPlayers = TestService.testGetPlayers();
         
         //Get current gameboard, if none exists createGameBoard() is called
         //after getting the gameboard, getPlayers() is called
@@ -40,7 +52,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     
     self.startGame = function() {
         self.gameStart=true;
-        self.curPlayer = self.players[0]; //Miss Scarlet goes first        
+        self.curPlayer = self.testPlayers[0]; //Miss Scarlet goes first        
     };
     
     self.getGameBoard = function () {
@@ -86,8 +98,9 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 $log.debug('Got players ' + JSON.stringify(response));
                 self.serverPlayers = response.data.players;
                 self.playerCount = _.size(self.serverPlayers);
-//                console.log(self.serverPlayers);
-//                console.log( _.size(self.serverPlayers) ); 
+                
+                //this is how it should be
+                //self.playerCount = self.serverPlayers.length;
             },
             function (error) {
                 $log.error('Error retrieving players ' + JSON.stringify(error));
@@ -103,6 +116,9 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 $log.debug('Added player ' + JSON.stringify(response));
                 self.serverPlayers = response.data.players;
                 self.playerCount = _.size(self.serverPlayers);
+                
+                //this is how it should be
+                //self.playerCount = self.serverPlayers.length;
             },
             function (error) {
                 $log.error('Error retrieving players ' + JSON.stringify(error));
@@ -169,13 +185,13 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         }
             
         console.log(self.curPlayer.name + ' is moving ' + direction + '!');
-        TestService.updatePlayers(self.curPlayer);
+        TestService.testUpdatePlayers(self.curPlayer);
         
-        var index = self.players.indexOf(self.curPlayer) + 1;
-        if (index>self.players.length-1) 
+        var index = self.testPlayers.indexOf(self.curPlayer) + 1;
+        if (index>self.testPlayers.length-1) 
             index = 0;
         
-        self.curPlayer = self.players[index];
+        self.curPlayer = self.testPlayers[index];
     }
     
     self.initGame();

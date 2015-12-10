@@ -25,18 +25,33 @@
         <script src="scripts/clue-controller.js"></script>
     </head>
 <body ng-controller="clueCtrl as ctrl">
+    <!-- Debugging Toolbar -->
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <a class="navbar-brand" href="#">Debugging Header</a>
+            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.createGameBoard()">Create Game</button>
+            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getPlayers()">Update Players</button>
+            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.deleteGameBoard()">Delete Game</button>
+            
+        </div>
+    </nav>
     <div class="row"
          cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
                    backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
         <div class="col-md-6 col-md-offset-3">
             <h1 class="text-center">ClueLess</h1>
+            <h4 class="text-center">Game State: 
+                <span ng-if="ctrl.game_board && !ctrl.gameStart" style="color:blue">Created</span>
+                <span ng-if="ctrl.game_board && ctrl.gameStart" style="color:green">Started</span>
+                <span ng-if="!ctrl.game_board" style="color:red">null</span>
+            </h4>
             <h4 class="text-center">{{ctrl.playerCount}}/6 players</h4>
             <div class="text-center" ng-if="!ctrl.gameStart">
                 <h4 ng-if="ctrl.testMyPlayer==null">Select your character:</h4>
                 <h4 ng-if="ctrl.testMyPlayer">Waiting on other players...</h4>
                 <div class="btn-group" role="group" aria-label="...">
                     <button type="button" class="btn btn-default" ng-repeat="piece in ctrl.testGamePieces"
-                            ng-click="ctrl.pieceSelected(piece); isDisabled=true" ng-disabled="isDisabled">
+                            ng-click="ctrl.pieceSelected(piece)" ng-disabled="piece.isTaken">
                         {{piece.name}}
                     </button>
                 </div>
@@ -74,13 +89,6 @@
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn btn-default">End Turn</button>
                     </div>
-                </div>
-                <p>Testing Rest Calls</p>
-                <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" ng-click="ctrl.getPlayers()">Get Players</button>
-                    <button type="button" class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.myPlayer)">Add Player1</button>
-                    <button type="button" class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.myPlayer2)">Add Player2</button>
-                    <button type="button" class="btn btn-default" ng-click="ctrl.deleteGameBoard()">Delete Gameboard</button>
                 </div>
             </div>
         </div>

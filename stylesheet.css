@@ -30,7 +30,7 @@ li {
     line-height: 1.33;
     border-radius: 6px;
     position: fixed;
-    top: 30%;
+    top: 45%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -44,5 +44,5 @@ li {
 }
 
 .sidebar {
-    margin-top: 100px;
+    margin-top: 150px;
 }

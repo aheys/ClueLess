@@ -11,42 +11,48 @@ app.factory('TestService', function() {
                     position: 0,
                     color: "orange",
                     x: 3,
-                    y: 0
+                    y: 0,
+                    isTaken: false
                 },
                 {
                     name: "Col. Mustard",
                     position: 1,
                     color: "yellow",
                     x: 4,
-                    y: 1
+                    y: 1,
+                    isTaken: false
                 },
                 {
                     name: "Mrs. White",
                     position: 2,
                     color: "white",
                     x: 3,
-                    y: 4
+                    y: 4,
+                    isTaken: false
                 },
                 {
                     name: "Mr. Green",
                     position: 3,
                     color: "lightgreen",
                     x: 1,
-                    y: 4
+                    y: 4,
+                    isTaken: false
                 },
                 {
                     name: "Mrs. Peacock",
                     position: 4,
                     color: "#0066FF",
                     x: 0,
-                    y: 3
+                    y: 3,
+                    isTaken: false
                 },
                 {
                     name: "Prof. Plum",
                     position: 5,
                     color: "purple",
                     x: 0,
-                    y: 1
+                    y: 1,
+                    isTaken: false
                 }
             ];
     var testPlayers = [];

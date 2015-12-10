@@ -28,6 +28,7 @@
     <div cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
                    backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
         <h1 class="center-text">ClueLess</h1>
+        <h4 class="center-text">{{ctrl.playerCount}}/6 players</h4>
         <div ng-if="!ctrl.gameStart">
             <h4 class="center-text">Select your character:</h4>
             <div class="btn-group" role="group" aria-label="..." ng-repeat="piece in ctrl.gamePieces">
@@ -68,7 +69,7 @@
                     <button type="button" class="btn btn-default">End Turn</button>
                 </div>
             </div>
-            <div style="position: relative; top: -40px; left: 10px">
+            <div>
                 <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
                 <ul ng-repeat="player in ctrl.players">
                     <li>
@@ -76,6 +77,13 @@
                         {{player.name}}
                     </li>
                 </ul>
+            </div>
+            <p>Testing Rest Calls</p>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" ng-click="ctrl.getPlayers()">Get Players</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.myPlayer)">Add Player1</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.myPlayer2)">Add Player2</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.deleteGameBoard()">Delete Gameboard</button>
             </div>
         </div>
     </div>

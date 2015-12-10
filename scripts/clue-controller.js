@@ -21,16 +21,21 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     };
     
     self.initGame = function() {
+        self.playerCount = 0;
         self.players = TestService.testGetPlayers();
         
         //Get current gameboard, if none exists createGameBoard() is called
         //after getting the gameboard, getPlayers() is called
         self.getGameBoard();
         
-        self.moveUpValid = false;
-        self.moveDownValid = false;
-        self.moveLeftValid = false; 
-        self.moveRightValid = false; 
+        self.myPlayer = {
+            "name": "Andy",
+            "board_piece": "Miss Scarlet"
+        };
+        self.myPlayer2 = {
+            "name": "Test",
+            "board_piece": "Col. Mustard"
+        }
     };
     
     self.startGame = function() {
@@ -80,7 +85,9 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
             function (response) {
                 $log.debug('Got players ' + JSON.stringify(response));
                 self.serverPlayers = response.data.players;
-                console.log(self.serverPlayers);
+                self.playerCount = _.size(self.serverPlayers);
+//                console.log(self.serverPlayers);
+//                console.log( _.size(self.serverPlayers) ); 
             },
             function (error) {
                 $log.error('Error retrieving players ' + JSON.stringify(error));
@@ -88,13 +95,14 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         )
     };
     
-    self.addPlayer = function () {
+    self.addPlayer = function (player) {
         $log.debug('Add player...');
-        this.promise = RestService.put('add_player');
+        this.promise = RestService.post('player', player);
         this.promise.then(
             function (response) {
                 $log.debug('Added player ' + JSON.stringify(response));
-                console.log(response);
+                self.serverPlayers = response.data.players;
+                self.playerCount = _.size(self.serverPlayers);
             },
             function (error) {
                 $log.error('Error retrieving players ' + JSON.stringify(error));

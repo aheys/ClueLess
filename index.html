@@ -46,18 +46,19 @@
                 <span ng-if="ctrl.gameStart && ctrl.joinedAfterStart" style="color:red">Already Started</span>
                 <span ng-if="!ctrl.game_board" style="color:red">null</span>
             </h4>
+            <button type="button" class="btn btn-success btn-xl btn-start" ng-if="!ctrl.game_board" ng-click="ctrl.createGameBoard()">New Game</button>
             <h4 class="text-center">{{ctrl.playerCount}}/6 players</h4>
         </div>
     </div>
     
     <!-- Pre-Game Setup -->
-    <div class="row" ng-if="!ctrl.gameStart">        
+    <div class="row" ng-if="!ctrl.gameStart && ctrl.game_board">        
         <div class="col-md-6 col-md-offset-3">
             <div class="text-center">
                 <h4 ng-if="ctrl.myPlayer==null">Select your character:</h4>
                 <h4 ng-if="ctrl.myPlayer">Waiting on other players...</h4>
                 <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" ng-repeat="piece in ctrl.testGamePieces"
+                    <button type="button" class="btn btn-default" ng-repeat="piece in ctrl.gamePieces"
                             ng-click="ctrl.pieceSelected(piece)" ng-disabled="piece.isTaken || ctrl.myPlayerAdded">
                         {{piece.name}}
                     </button>

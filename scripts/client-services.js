@@ -1,11 +1,7 @@
 app.factory('ClientService', function() {
     
     
-    /*
-    Need to add: Eventually hook up with backend, add Restangular, moving piece should interact with a service, turns should have a service
-    */
-    
-    var testGamePieces = [
+    var GamePieces = [
                 {
                     name: "Miss Scarlet",
                     color: "orange",
@@ -37,25 +33,9 @@ app.factory('ClientService', function() {
                     isTaken: false
                 }
             ];
-    var testPlayers = [];
     var service = {
-        testGetGamePieces: function() {   
-            return testGamePieces;
-        },
-        testAddPlayer: function(player) {
-            if (testPlayers.indexOf(player) == -1)
-                testPlayers.push(player);
-        },
-        testGetPlayers: function() {
-            return testPlayers;
-        },
-        testUpdatePlayers: function(player) {
-            for (var i=0; i<testPlayers.length; i++) {
-                if (player.name == testPlayers[i].name) {
-                    testPlayers[i].x = player.x;
-                    testPlayers[i].y = player.y;
-                }
-            }
+        getGamePieces: function() {   
+            return GamePieces;
         },
         MapLocationIdToXY: function (location_id) {
             if (location_id == 0)       //Study Room

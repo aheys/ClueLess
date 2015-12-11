@@ -8,24 +8,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
     self.backdrop = false;
     self.promise = null;
     
-    var id = null;
-    self.myPlayer = null;
-    self.myCards = null;
-    self.curPlayer = null;
-    self.myPlayerAdded = false;
-    self.isMyTurn = false;
-    self.gameStart = false;
-    self.game_board = null;
-    self.joinedAfterStart = false;
-    self.host = false;
-    self.testGamePieces = ClientService.testGetGamePieces();
+    
+    self.gamePieces = ClientService.getGamePieces();
         
     var MapSizeX = 5;
     var MapSizeY = 5;
     
     self.pieceSelected = function(piece) {
-        ClientService.testAddPlayer(piece);
-        
         self.myPlayer = piece.name;
         
         self.addPlayer(self.myPlayer);
@@ -33,13 +22,30 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
     };
     
     self.initGame = function() {
-        self.playerCount = 0;
-        self.testPlayers = ClientService.testGetPlayers();
-
+        self.reset();
         //Get current gameboard, if none exists createGameBoard() is called
         //after getting the gameboard, getPlayers() is called
         self.getGameBoard();
         
+    };
+    
+    self.reset = function () {
+        for (var j=0; j<self.gamePieces.length; j++) {
+            self.gamePieces[j].isTaken = false;
+        }
+        
+        var id = null;
+        self.myPlayer = null;
+        self.myCards = null;
+        self.curPlayer = null;
+        self.myPlayerAdded = false;
+        self.isMyTurn = false;
+        self.gameStart = false;
+        self.game_board = null;
+        self.joinedAfterStart = false;
+        self.createNewGame = false;
+        self.host = false;
+        self.playerCount = 0;
     };
     
     self.startGame = function() {
@@ -54,11 +60,15 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
                 self.game_boards = response.data;
                 if (self.game_boards) {
                     if (self.game_boards.length == 0) {
-                        self.createGameBoard();
+//                        self.createGameBoard();
+                        //button for creating a new game if none exist
+                        self.game_board = null;
+                        self.createNewGame = true;
                     }
                     else {
                         self.game_board = response.data[0];
                         //if game already started
+                        self.createNewGame = false;
                         if (self.game_board.game_in_play) {
                             self.gameStart = true;
                             self.joinedAfterStart = true;
@@ -106,10 +116,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
                             self.gameStart=true;
                         }
                     }
-                    if (self.gameStart) {
+                    if (self.gameStart && !self.joinedAfterStart) {
                         self.updatePlayers();
 
                     }
+                }
+                if (!self.game_board) {
+                    self.getGameBoard();
                 }
             },
             function (error) {
@@ -117,6 +130,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
                 if (self.gameStart) {
                     self.reset();
                 }
+                self.getGameBoard();
             }
         )
     };
@@ -179,7 +193,9 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
         )
     };
     
+    //not working for some reason
     self.sendPlayerMove = function (location) {
+        console.log(location)
         var data = {
             "location": location
         };
@@ -201,27 +217,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
     self.setPiecesTaken = function () {
         self.playersColors = [];
         for (var i=0; i<self.playerCount; i++) {
-            for (var j=0; j<self.testGamePieces.length; j++) {
-                if (self.serverPlayers[i].board_piece.name == self.testGamePieces[j].name)  {   
-                    self.testGamePieces[j].isTaken = true;
-                    self.playersColors[i] = self.testGamePieces[j].color;
+            for (var j=0; j<self.gamePieces.length; j++) {
+                if (self.serverPlayers[i].board_piece.name == self.gamePieces[j].name)  {   
+                    self.gamePieces[j].isTaken = true;
+                    self.playersColors[i] = self.gamePieces[j].color;
                 }
             }
         }
-    };
-    
-    self.reset = function () {
-        for (var j=0; j<self.testGamePieces.length; j++) {
-            self.testGamePieces[j].isTaken = false;
-        }
-        self.game_board = null;
-        self.playerCount = 0;
-        self.gameStart = false;
-        self.joinedAfterStart = false;
-        self.myPlayerAdded = false;
-        self.joinedAfterStart = false;
-        self.myPlayer = null;
-        self.isMyTurn == false;
     };
     
     self.findMyPlayerId = function () {
@@ -269,9 +271,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
     
     //update coordinates of player, curPlayer is now next player to update turn
     self.makeMove = function (direction) {
+        var x = self.curPlayer.x;
+        var y = self.curPlayer.y;
+        
         if (direction == "up"){
             if (self.curPlayer.y > 0 && self.curPlayer.x%2 == 0){
-                self.curPlayer.y--;
+                y--;
             }
             else{
                 console.log('invalid move');
@@ -280,7 +285,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
         }
         else if (direction == "down") {
             if (self.curPlayer.y < MapSizeY-1 && self.curPlayer.x%2 == 0) {
-                self.curPlayer.y++;
+                y++;
             }
             else {
                 console.log('invalid move');
@@ -289,7 +294,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
         }
         else if (direction == "left") {
             if (self.curPlayer.x > 0 && self.curPlayer.y%2 == 0) {
-                self.curPlayer.x--;
+                x--;
             }
             else {
                 console.log('invalid move');
@@ -298,12 +303,22 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
         }
         else if (direction == "right") {
             if (self.curPlayer.x < MapSizeX-1 && self.curPlayer.y%2 == 0) {
-                self.curPlayer.x++;
+               x++;
             }
             else {
                 console.log('invalid move');
                 return;
             }
+        }
+        
+        if (self.checkIfMoveValid(x, y)) {
+            //valid move
+            self.curPlayer.x = x;
+            self.curPlayer.y = y;
+        }
+        else {
+            console.log('invalid move');
+            return;
         }
             
         var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
@@ -314,12 +329,31 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
         
     };
     
+    
+    //this function is untested
+    self.checkIfMoveValid = function (x, y) {
+        //first check if it is hall
+        //hallways are all located at odd combinations of x+y, if x+y is even it cannot be a hallway
+        if ((x+y)%2 == 0) {
+            return true;
+        }
+        //is a hallway
+        else {
+            var location = ClientService.MapXYtoLocationId({x: x, y: y});
+            for (var i=0; i<self.playerCount; i++) {
+                if (self.serverPlayers[i].location_id == location)
+                    return false;
+            }
+            return true;
+        }
+    };
+        
     //Turned off for developing, calls getPlayers every 2 seconds
-//    $interval((function () {
-//        if (self.isMyTurn == false) {
-//            self.getPlayers();
-//        }
-//    }), 3000)
+    $interval((function () {
+        if (self.isMyTurn == false) {
+            self.getPlayers();
+        }
+    }), 3000)
     
     self.initGame();
 })

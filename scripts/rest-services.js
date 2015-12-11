@@ -7,23 +7,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
 //    var url = 'http://localhost:3000/';
     
     var services = {
-//        createGameboard: function() {
-//            $log.debug('creating /game_board...');
-//            var deferredPromise = $q.defer();
-//            Restangular.all("game_board").post()
-//                .then(function (response) {
-//                    $log.debug("creating new game_board...");
-//                    console.log(response);
-//                    deferredPromise.resolve(response);
-//                },
-//                function (error) {
-//                    $log.error("error creating new game_board!");
-//                    alert('error creating new game_board!');
-//                    deferredPromise.reject(error);
-//                });
-//            return deferredPromise.promise;
-//        },
-        
         get: function (name) {
                 $log.debug("getting list of " + name);
                 var deferredPromise = $q.defer();

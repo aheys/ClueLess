@@ -24,20 +24,20 @@
         <script src="scripts/services.js"></script>
         <script src="scripts/clue-controller.js"></script>
     </head>
-<body ng-controller="clueCtrl as ctrl">
+<body ng-controller="clueCtrl as ctrl" cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
+                   backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
     <!-- Debugging Toolbar -->
     <nav class="navbar navbar-default">
         <div class="container">
             <a class="navbar-brand" href="#">Debugging Header</a>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.createGameBoard()">Create Game</button>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getPlayers()">Update Players</button>
+            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getPlayerById()">Get My Player</button>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.deleteGameBoard()">Delete Game</button>
             
         </div>
     </nav>
-    <div class="row"
-         cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
-                   backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
+    <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <h1 class="text-center">ClueLess</h1>
             <h4 class="text-center">Game State: 
@@ -46,7 +46,12 @@
                 <span ng-if="!ctrl.game_board" style="color:red">null</span>
             </h4>
             <h4 class="text-center">{{ctrl.playerCount}}/6 players</h4>
-            <div class="text-center" ng-if="!ctrl.gameStart">
+        </div>
+    </div>
+    <!-- Pre-Game Setup -->
+    <div class="row" ng-if="!ctrl.gameStart">        
+        <div class="col-md-6 col-md-offset-3">
+            <div class="text-center">
                 <h4 ng-if="ctrl.testMyPlayer==null">Select your character:</h4>
                 <h4 ng-if="ctrl.testMyPlayer">Waiting on other players...</h4>
                 <div class="btn-group" role="group" aria-label="...">
@@ -57,11 +62,31 @@
                 </div>
                 <p ng-if="ctrl.testPlayers.length<3" class="text-warning center-text">3 players are required to start</p>
                 <button type="button" class="btn btn-success btn-xl btn-start" ng-if="ctrl.host" ng-click="ctrl.startGame()" 
-                        ng-disabled="ctrl.testPlayers.length<3">
+                        ng-disabled="ctrl.playerCount<3">
                     Start Game
                 </button>
             </div>
-            <div class="text-center" ng-if="ctrl.gameStart">
+        </div>
+    </div>
+    <!-- Game Setup -->
+    <div class="row" ng-if="ctrl.gameStart"> 
+        <div class="col-md-3 sidebar" ng-if="ctrl.gameStart">
+            <div style="float:right">
+                <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
+                <ul>
+                    <li class="legend" ng-repeat="player in ctrl.testPlayers">
+                        <div class="color-box" style="background:{{player.color}}"></div>
+                        {{player.name}}
+                    </li>
+                </ul>
+                <h4>My cards:</h4>
+                <ul>
+                    <li ng-repeat="card in ctrl.myCards">{{card.type}}: {{card.name}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-center">
                 <canvas gameboard id="myCanvas" players="ctrl.testPlayers">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
@@ -93,19 +118,7 @@
             </div>
         </div>
         <div class="col-md-3 sidebar" ng-if="ctrl.gameStart">
-            <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
-            <ul>
-                <li class="legend" ng-repeat="player in ctrl.testPlayers">
-                    <div class="color-box" style="background:{{player.color}}"></div>
-                    {{player.name}}
-                </li>
-            </ul>
-            <h4>My cards:</h4>
-            <ul>
-                <li>Card one</li>
-                <li>Card two</li>
-                <li>Card three</li>
-            </ul>
+            <pre style="height:500px">Player actions go here:</pre>
         </div>
     </div>
 </body>

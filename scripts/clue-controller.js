@@ -10,6 +10,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     
     var id = null;
     self.myPlayer = null;
+    self.myCards = null;
     self.testMyPlayer = null;
     self.gameStart = false;
     self.host = false;
@@ -49,15 +50,12 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         self.gameStart=true;
         self.curPlayer = self.testPlayers[0]; //Miss Scarlet goes first    
         self.startGameBoard();
-        //todo after starting gameboard get my cards by my player id
     };
     
     self.getGameBoard = function () {
-        $log.debug('Getting gameboard...');
-        this.promise = RestService.get('game_boards');
-        this.promise.then(
+        self.promise = RestService.get('game_boards');
+        self.promise.then(
             function (response) {
-                $log.debug('Got gameboard ' + JSON.stringify(response));
                 self.game_boards = response.data;
                 if (self.game_boards.length == 0) {
                     self.createGameBoard();
@@ -65,40 +63,31 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 else {
                     self.game_board = response.data[0];
                     self.getPlayers();
+                    console.log(self.game_board);
                 }
-                console.log(self.game_boards);
             },
             function (error) {
-                $log.error('Error retrieving gameboard ' + JSON.stringify(error));
-//                if (error.status == 404) {
-//                    self.createGameBoard();
-//                }
             }
         )
     };
     
     self.createGameBoard = function () {
-        $log.debug('Getting gameboard...');
-        this.promise = RestService.post('game_boards', '');
-        this.promise.then(
+        self.promise = RestService.post('game_boards', '');
+        self.promise.then(
             function (response) {
-                $log.debug('Created gameboard ' + JSON.stringify(response));
                 self.game_board = response.data;
                 console.log(response);
                 self.getPlayers();
             },
             function (error) {
-                $log.error('Error creating gameboard ' + JSON.stringify(error));
             }
         )
     };
     
     self.getPlayers = function () {
-        $log.debug('Getting players...');
-        this.promise = RestService.get('players');
-        this.promise.then(
+        self.promise = RestService.get('players');
+        self.promise.then(
             function (response) {
-                $log.debug('Got players ' + JSON.stringify(response));
                 self.serverPlayers = response.data;
 
                 self.playerCount = self.serverPlayers.length;
@@ -106,55 +95,58 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 self.setPiecesTaken();
             },
             function (error) {
-                $log.error('Error retrieving players ' + JSON.stringify(error));
             }
         )
     };
     
     self.addPlayer = function (player) {
-        $log.debug('Add player...');
-        this.promise = RestService.post('players', player);
-        this.promise.then(
+        self.promise = RestService.post('players', player);
+        self.promise.then(
             function (response) {
-                $log.debug('Added player ' + JSON.stringify(response));
                 self.serverPlayers = response.data;
                 self.playerCount = self.serverPlayers.length;
                 self.setPiecesTaken();
                 self.findMyPlayerId();
             },
             function (error) {
-                $log.error('Error adding player ' + JSON.stringify(error));
                 alert("Player Taken or No Game Created!")
             }
         )
     };
     
     self.deleteGameBoard = function () {
-        $log.debug('Delete gameboard...');
-        this.promise = RestService.delete('game_boards');
-        this.promise.then(
+        self.promise = RestService.delete('game_boards');
+        self.promise.then(
             function (response) {
-                $log.debug('Deleted gameboard ' + JSON.stringify(response));
                 self.game_board = null;
                 self.playerCount = 0;
                 self.setPiecesAvailable();
             },
             function (error) {
-                $log.error('Error deleted gameboard ' + JSON.stringify(error));
             }
         )   
     };
     
     self.startGameBoard = function () {
-        $log.debug('Starting gameboard...');
-        this.promise = RestService.post('game_boards/start_game', '');
-        this.promise.then(
+        self.promise = RestService.post('game_boards/start_game', '');
+        self.promise.then(
             function (response) {
-                $log.debug('Started gameboard ' + JSON.stringify(response));
                 console.log(response);
+                self.getPlayerById();
             },
             function (error) {
-                $log.error('Error starting gameboard ' + JSON.stringify(error));
+            }
+        )
+    }
+    
+    self.getPlayerById = function () {
+        self.promise = RestService.getOne('players', id);
+        self.promise.then(
+            function (response) {
+                self.myCards = response.data.cards;
+                console.log(self.myCards);
+            },
+            function (error) {
             }
         )
     }

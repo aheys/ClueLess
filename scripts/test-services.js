@@ -74,6 +74,50 @@ app.factory('TestService', function() {
                     testPlayers[i].y = player.y;
                 }
             }
+        },
+        MapLocationIdToXY: function (location_id) {
+            if (location_id == 0)       //Study Room
+                return {x: 0, y: 0};
+            else if (location_id == 1)  //Library Room
+                return {x: 0, y: 2};
+            else if (location_id == 2)  //Conservatory Room
+                return {x: 0, y: 4};
+            else if (location_id == 3)  //Billiard Room
+                return {x: 2, y: 2};
+            else if (location_id == 4)  //Ball Room
+                return {x: 2, y: 4};
+            else if (location_id == 5)  //Lounge
+                return {x: 4, y: 0};
+            else if (location_id == 6)  //Dining Room
+                return {x: 2, y: 4};
+            else if (location_id == 7)  //Kitchen
+                return {x: 4, y: 4};
+            else if (location_id == 8)  //Hall Room
+                return {x: 2, y: 0};
+            else if (location_id == 9)  //Study-Hall Hallway
+                return {x: 1, y: 0};
+            else if (location_id == 10) //Study-Library Hallway
+                return {x: 0, y: 1};
+            else if (location_id == 11) //Library-Billiard Hallway
+                return {x: 1, y: 2};
+            else if (location_id == 12) //Library-Conservatory Hallway
+                return {x: 0, y: 3};
+            else if (location_id == 13) //Conservatory-Ballroom Hallway
+                return {x: 1, y: 4};
+            else if (location_id == 14) //HallRoom-Billiard Hallway
+                return {x: 2, y: 1};
+            else if (location_id == 15) //Billiard-Ballroom Hallway
+                return {x: 2, y: 3};
+            else if (location_id == 16) //Billiard-Dining Hallway
+                return {x: 3, y: 2};
+            else if (location_id == 17) //Ballroom-Kitchen Hallway
+                return {x: 3, y: 4};
+            else if (location_id == 18) //HallRoom-Louge Hallway
+                return {x: 3, y: 0};
+            else if (location_id == 19) //Lounge-Dining Hallway
+                return {x: 4, y: 1};
+            else // location_id == 20   //Dining-Kitchen Hallway
+                return {x: 4, y: 3};
         }
     };
     return service;

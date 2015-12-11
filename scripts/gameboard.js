@@ -159,7 +159,7 @@ app.directive("gameboard", function() {
                 //loop through players and draw each piece
                 for (var i in $scope.players) {
                     var player = $scope.players[i];
-                    ctx.drawImage(gamePieces[player.position], 
+                    ctx.drawImage(gamePieces[i], //player.position ***NEED TO FIX***
                                   Map[player.y][player.x].x - gamePieces[0].width/2 + 12, //offset of 12 due to resizing from 64 px to 40px
                                   Map[player.y][player.x].y - gamePieces[0].height/2 + 12, 
                                   40, 40)

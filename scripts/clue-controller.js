@@ -1,11 +1,11 @@
-app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
+app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestService) {
     var self = this;
     
     // cg-busy
     self.delay = 0;
     self.minDuration = 0;
     self.message = 'Please Wait...';
-    self.backdrop = true;
+    self.backdrop = false;
     self.promise = null;
     
     var id = null;
@@ -98,8 +98,13 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
             function (response) {
                 self.serverPlayers = response.data;
                 console.log(self.serverPlayers);
-                self.playerCount = self.serverPlayers.length;
-                self.setPiecesTaken();
+                if (!self.gameStart) {
+                    self.playerCount = self.serverPlayers.length;
+                    self.setPiecesTaken();
+                }
+                if (self.gameStart) {
+                    self.findLocations();
+                }
             },
             function (error) {
             }
@@ -141,6 +146,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 self.gameStart=true;
                 console.log(response);
                 self.getPlayerById();
+                self.findLocations();
             },
             function (error) {
             }
@@ -185,6 +191,16 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 id = self.serverPlayers[i].id;
             }
         }
+    }
+    
+    self.findLocations = function () {
+        for (var i=0; i<self.playerCount; i++) {
+            var obj = TestService.MapLocationIdToXY(self.serverPlayers[i].location_id);
+//            console.log(obj);
+            self.serverPlayers[i].x = obj.x;
+            self.serverPlayers[i].y = obj.y;
+        }
+        console.log(self.serverPlayers);
     }
     /*
         Need to add: checkMove() to check if hallway is occupied, handle secret pathways
@@ -239,6 +255,11 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         
         self.curPlayer = self.testPlayers[index];
     }
+    
+    //Turned off for developing, calls getPlayers every 2 seconds
+//    $interval((function () {
+//        self.getPlayers();
+//    }), 2000)
     
     self.initGame();
 })

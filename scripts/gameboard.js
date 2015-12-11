@@ -143,7 +143,7 @@ app.directive("gameboard", function() {
                 [Hallways.LC, null, Hallways.BB, null, Hallways.DK],
                 [Rooms.Conservatory, Hallways.CB, Rooms.BallRoom, Hallways.BK, Rooms.Kitchen]
             ];
-
+            
             window.onload = function() {
                 render();
             };

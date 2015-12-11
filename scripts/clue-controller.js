@@ -1,4 +1,4 @@
-app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestService) {
+app.controller("clueCtrl", function($scope, $log, $interval, ClientService, RestService) {
     var self = this;
     
     // cg-busy
@@ -11,36 +11,30 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
     var id = null;
     self.myPlayer = null;
     self.myCards = null;
-    self.testMyPlayer = null;
+    self.curPlayer = null;
+    self.myPlayerAdded = false;
+    self.isMyTurn = false;
     self.gameStart = false;
+    self.game_board = null;
     self.joinedAfterStart = false;
     self.host = false;
-    self.player = {};
-    self.testGamePieces = TestService.testGetGamePieces();
+    self.testGamePieces = ClientService.testGetGamePieces();
         
     var MapSizeX = 5;
     var MapSizeY = 5;
     
     self.pieceSelected = function(piece) {
-        TestService.testAddPlayer(piece);
-        self.testPlayers = TestService.testGetPlayers();
-        self.testMyPlayer = piece;
+        ClientService.testAddPlayer(piece);
         
-        //first player to select a piece becomes 'host' and is the only player that can start the game
-        if (self.testMyPlayer == self.testPlayers[0]) {
-            self.host = true;
-        }
-        
-        self.myPlayer = {
-            "board_piece": piece.name
-        }
+        self.myPlayer = piece.name;
         
         self.addPlayer(self.myPlayer);
+        
     };
     
     self.initGame = function() {
         self.playerCount = 0;
-        self.testPlayers = TestService.testGetPlayers();
+        self.testPlayers = ClientService.testGetPlayers();
 
         //Get current gameboard, if none exists createGameBoard() is called
         //after getting the gameboard, getPlayers() is called
@@ -49,29 +43,31 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
     };
     
     self.startGame = function() {
-        self.curPlayer = self.testPlayers[0]; //Miss Scarlet goes first    
         self.startGameBoard();
     };
     
+    //gets game_boards from server, if none found then it creates one
     self.getGameBoard = function () {
         self.promise = RestService.get('game_boards');
         self.promise.then(
             function (response) {
                 self.game_boards = response.data;
-                if (self.game_boards.length == 0) {
-                    self.createGameBoard();
-                }
-                else {
-                    self.game_board = response.data[0];
-                    self.getPlayers();
-                    
-                    //if game already started
-                    if (self.game_board.game_in_play) {
-                        self.gameStart = true;
-                        self.joinedAfterStart = true;
+                if (self.game_boards) {
+                    if (self.game_boards.length == 0) {
+                        self.createGameBoard();
                     }
-                    
-                    console.log(self.game_board);
+                    else {
+                        self.game_board = response.data[0];
+                        //if game already started
+                        if (self.game_board.game_in_play) {
+                            self.gameStart = true;
+                            self.joinedAfterStart = true;
+                        }
+
+                        self.getPlayers();
+
+                        console.log(self.game_board);
+                    }
                 }
             },
             function (error) {
@@ -98,22 +94,38 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
             function (response) {
                 self.serverPlayers = response.data;
                 console.log(self.serverPlayers);
-                if (!self.gameStart) {
-                    self.playerCount = self.serverPlayers.length;
-                    self.setPiecesTaken();
-                }
-                if (self.gameStart) {
-                    self.findLocations();
+                self.playerCount = self.serverPlayers.length;
+                if (self.playerCount>0) {
+                    if (!self.gameStart) {
+                        self.setPiecesTaken();
+
+                        //only way I can see if game starts from a remote player waiting in lobby
+                        if (self.serverPlayers[0].player_in_turn == true) {
+                            self.getCardsByPlayerId();
+                            self.updatePlayers();
+                            self.gameStart=true;
+                        }
+                    }
+                    if (self.gameStart) {
+                        self.updatePlayers();
+
+                    }
                 }
             },
             function (error) {
+                //if game is deleted reset client variables
+                if (self.gameStart) {
+                    self.reset();
+                }
             }
         )
     };
     
     self.addPlayer = function (player) {
-        console.log(player);
-        self.promise = RestService.post('players', player);
+        var data = {
+            "board_piece": player
+        }
+        self.promise = RestService.post('players', data);
         self.promise.then(
             function (response) {
                 self.serverPlayers = response.data;
@@ -121,6 +133,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
                 self.setPiecesTaken();
                 console.log(self.serverPlayers);
                 self.findMyPlayerId();
+                self.myPlayerAdded = true;
             },
             function (error) {
                 alert("Player Taken or No Game Created!")
@@ -143,38 +156,60 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
         self.promise = RestService.post('game_boards/start_game', '');
         self.promise.then(
             function (response) {
-                self.gameStart=true;
-                console.log(response);
-                self.getPlayerById();
-                self.findLocations();
+                //I have to re-grab players() in order to get my player's cards after the game has started
+//                self.getCardsByPlayerId();
+//                self.gameStart=true;   
+                
+                //I have to getPlayers() again to set location_id now that they are set from startGameBoard()
+                self.getPlayers();
             },
             function (error) {
             }
         )
-    }
+    };
     
     self.getPlayerById = function () {
         self.promise = RestService.getOne('players', id);
         self.promise.then(
             function (response) {
                 self.myCards = response.data.cards;
-                console.log(self.myCards);
             },
             function (error) {
             }
         )
-    }
+    };
+    
+    self.sendPlayerMove = function (location) {
+        var data = {
+            "location": location
+        };
+        self.promise = RestService.postAction('players', id, "move", data);
+        self.promise.then(
+            function (response) {
+                console.log(response);
+            },
+            function (error) {
+            }
+        )
+    };
+    
+    self.getCardsByPlayerId = function () {
+        self.myCards = self.serverPlayers[id].cards;
+    };
     
     //set game pieces to taken so that a user cannot click on a button for that character
     self.setPiecesTaken = function () {
+        self.playersColors = [];
         for (var i=0; i<self.playerCount; i++) {
             for (var j=0; j<self.testGamePieces.length; j++) {
                 if (self.serverPlayers[i].board_piece.name == self.testGamePieces[j].name)  {   
                     self.testGamePieces[j].isTaken = true;
+                    self.playersColors[i] = self.testGamePieces[j].color;
                 }
             }
         }
-    }
+    };
+    
     self.reset = function () {
         for (var j=0; j<self.testGamePieces.length; j++) {
             self.testGamePieces[j].isTaken = false;
@@ -183,25 +218,50 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
         self.playerCount = 0;
         self.gameStart = false;
         self.joinedAfterStart = false;
-    }
+        self.myPlayerAdded = false;
+        self.joinedAfterStart = false;
+        self.myPlayer = null;
+        self.isMyTurn == false;
+    };
     
     self.findMyPlayerId = function () {
         for (var i=0; i<self.playerCount; i++) {
-            if (self.serverPlayers[i].board_piece.name == self.myPlayer.board_piece) {
+            if (self.serverPlayers[i].board_piece.name == self.myPlayer) {
                 id = self.serverPlayers[i].id;
+                
+                //first player to select a piece becomes 'host' and is the only player that can start the game
+                if (id == self.serverPlayers[0].id) {
+                    self.host = true;
+                }
             }
         }
-    }
+    };
     
-    self.findLocations = function () {
+    //confusing language here, curPlayer is the most recent player_in_turn from getPlayers() call
+    self.updatePlayers = function () {
         for (var i=0; i<self.playerCount; i++) {
-            var obj = TestService.MapLocationIdToXY(self.serverPlayers[i].location_id);
-//            console.log(obj);
+            var obj = ClientService.MapLocationIdToXY(self.serverPlayers[i].location_id);
             self.serverPlayers[i].x = obj.x;
             self.serverPlayers[i].y = obj.y;
+            if (self.serverPlayers[i].player_in_turn == true) {
+                
+                //check if curPlayer is already set to the correct current player in turn
+                //if not then set new curPlayer
+                if (self.curPlayer == null || self.curPlayer.id != self.serverPlayers[i].id) {
+                    self.curPlayer = self.serverPlayers[i];
+                    console.log(self.curPlayer.board_piece.name + "'s Turn");
+                    
+                    if (self.curPlayer.id == id) {
+                        self.isMyTurn = true;
+                    }
+                    else {
+                        self.isMyTurn = false;
+                    }
+                }
+            }
         }
-        console.log(self.serverPlayers);
-    }
+    };
+    
     /*
         Need to add: checkMove() to check if hallway is occupied, handle secret pathways
     */
@@ -246,20 +306,20 @@ app.controller("clueCtrl", function($scope, $log, $interval, TestService, RestSe
             }
         }
             
-        console.log(self.curPlayer.name + ' is moving ' + direction + '!');
-        TestService.testUpdatePlayers(self.curPlayer);
+        var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
+        console.log(self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.curPlayer.x + ',' + self.curPlayer.y + ' - ' + locationId + '!');
+        self.serverPlayers[id] = self.curPlayer;
+        self.sendPlayerMove(locationId);
         
-        var index = self.testPlayers.indexOf(self.curPlayer) + 1;
-        if (index>self.testPlayers.length-1) 
-            index = 0;
         
-        self.curPlayer = self.testPlayers[index];
-    }
+    };
     
     //Turned off for developing, calls getPlayers every 2 seconds
 //    $interval((function () {
-//        self.getPlayers();
-//    }), 2000)
+//        if (self.isMyTurn == false) {
+//            self.getPlayers();
+//        }
+//    }), 3000)
     
     self.initGame();
 })

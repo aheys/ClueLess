@@ -20,8 +20,8 @@
         <!-- Source Scripts -->
         <script src="scripts/app.js"></script>
         <script src="scripts/gameboard.js"></script>
-        <script src="scripts/test-services.js"></script>
-        <script src="scripts/services.js"></script>
+        <script src="scripts/client-services.js"></script>
+        <script src="scripts/rest-services.js"></script>
         <script src="scripts/clue-controller.js"></script>
     </head>
 <body ng-controller="clueCtrl as ctrl" cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
@@ -54,17 +54,17 @@
     <div class="row" ng-if="!ctrl.gameStart">        
         <div class="col-md-6 col-md-offset-3">
             <div class="text-center">
-                <h4 ng-if="ctrl.testMyPlayer==null">Select your character:</h4>
-                <h4 ng-if="ctrl.testMyPlayer">Waiting on other players...</h4>
+                <h4 ng-if="ctrl.myPlayer==null">Select your character:</h4>
+                <h4 ng-if="ctrl.myPlayer">Waiting on other players...</h4>
                 <div class="btn-group" role="group" aria-label="...">
                     <button type="button" class="btn btn-default" ng-repeat="piece in ctrl.testGamePieces"
-                            ng-click="ctrl.pieceSelected(piece)" ng-disabled="piece.isTaken">
+                            ng-click="ctrl.pieceSelected(piece)" ng-disabled="piece.isTaken || ctrl.myPlayerAdded">
                         {{piece.name}}
                     </button>
                 </div>
-                <p ng-if="ctrl.testPlayers.length<3" class="text-warning center-text">3 players are required to start</p>
+                <p ng-if="ctrl.playerCount<3" class="text-warning center-text">3 players are required to start, set to 1 for development</p>
                 <button type="button" class="btn btn-success btn-xl btn-start" ng-if="ctrl.host" ng-click="ctrl.startGame()" 
-                        ng-disabled="ctrl.playerCount<3">
+                        ng-disabled="ctrl.playerCount<1">
                     Start Game
                 </button>
             </div>
@@ -75,16 +75,16 @@
     <div class="row" ng-if="ctrl.gameStart && !ctrl.joinedAfterStart"> 
         <div class="col-md-3 sidebar">
             <div style="float:right">
-                <h3>{{ctrl.myPlayer.board_piece}}</h3>
+                <h3>{{ctrl.myPlayer}}</h3>
                 <h4>My cards:</h4>
                 <ul>
                     <li ng-repeat="card in ctrl.myCards">{{card.type}}: {{card.name}}</li>
                 </ul>
-                <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
+                <h4>{{ctrl.curPlayer.board_piece.name}}'s Turn</h4>
                 <ul>
-                    <li class="legend" ng-repeat="player in ctrl.testPlayers">
-                        <div class="color-box" style="background:{{player.color}}"></div>
-                        {{player.name}}
+                    <li class="legend" ng-repeat="player in ctrl.serverPlayers">
+                        <div class="color-box" style="background:{{ctrl.playersColors[$index]}}"></div>
+                        {{player.board_piece.name}}
                     </li>
                 </ul>
             </div>

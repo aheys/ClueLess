@@ -13,6 +13,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     self.myCards = null;
     self.testMyPlayer = null;
     self.gameStart = false;
+    self.joinedAfterStart = false;
     self.host = false;
     self.player = {};
     self.testGamePieces = TestService.testGetGamePieces();
@@ -33,6 +34,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         self.myPlayer = {
             "board_piece": piece.name
         }
+        
         self.addPlayer(self.myPlayer);
     };
     
@@ -47,7 +49,6 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     };
     
     self.startGame = function() {
-        self.gameStart=true;
         self.curPlayer = self.testPlayers[0]; //Miss Scarlet goes first    
         self.startGameBoard();
     };
@@ -63,6 +64,13 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
                 else {
                     self.game_board = response.data[0];
                     self.getPlayers();
+                    
+                    //if game already started
+                    if (self.game_board.game_in_play) {
+                        self.gameStart = true;
+                        self.joinedAfterStart = true;
+                    }
+                    
                     console.log(self.game_board);
                 }
             },
@@ -89,9 +97,8 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         self.promise.then(
             function (response) {
                 self.serverPlayers = response.data;
-
+                console.log(self.serverPlayers);
                 self.playerCount = self.serverPlayers.length;
-//                console.log(self.serverPlayers[0].board_piece.name)
                 self.setPiecesTaken();
             },
             function (error) {
@@ -100,12 +107,14 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
     };
     
     self.addPlayer = function (player) {
+        console.log(player);
         self.promise = RestService.post('players', player);
         self.promise.then(
             function (response) {
                 self.serverPlayers = response.data;
                 self.playerCount = self.serverPlayers.length;
                 self.setPiecesTaken();
+                console.log(self.serverPlayers);
                 self.findMyPlayerId();
             },
             function (error) {
@@ -118,9 +127,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         self.promise = RestService.delete('game_boards');
         self.promise.then(
             function (response) {
-                self.game_board = null;
-                self.playerCount = 0;
-                self.setPiecesAvailable();
+                self.reset();
             },
             function (error) {
             }
@@ -131,6 +138,7 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
         self.promise = RestService.post('game_boards/start_game', '');
         self.promise.then(
             function (response) {
+                self.gameStart=true;
                 console.log(response);
                 self.getPlayerById();
             },
@@ -161,10 +169,14 @@ app.controller("clueCtrl", function($scope, $log, TestService, RestService) {
             }
         }
     }
-    self.setPiecesAvailable = function () {
+    self.reset = function () {
         for (var j=0; j<self.testGamePieces.length; j++) {
             self.testGamePieces[j].isTaken = false;
         }
+        self.game_board = null;
+        self.playerCount = 0;
+        self.gameStart = false;
+        self.joinedAfterStart = false;
     }
     
     self.findMyPlayerId = function () {

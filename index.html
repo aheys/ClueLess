@@ -42,12 +42,14 @@
             <h1 class="text-center">ClueLess</h1>
             <h4 class="text-center">Game State: 
                 <span ng-if="ctrl.game_board && !ctrl.gameStart" style="color:blue">Created</span>
-                <span ng-if="ctrl.game_board && ctrl.gameStart" style="color:green">Started</span>
+                <span ng-if="ctrl.gameStart && !ctrl.joinedAfterStart" style="color:green">Started</span>
+                <span ng-if="ctrl.gameStart && ctrl.joinedAfterStart" style="color:red">Already Started</span>
                 <span ng-if="!ctrl.game_board" style="color:red">null</span>
             </h4>
             <h4 class="text-center">{{ctrl.playerCount}}/6 players</h4>
         </div>
     </div>
+    
     <!-- Pre-Game Setup -->
     <div class="row" ng-if="!ctrl.gameStart">        
         <div class="col-md-6 col-md-offset-3">
@@ -68,20 +70,22 @@
             </div>
         </div>
     </div>
+    
     <!-- Game Setup -->
-    <div class="row" ng-if="ctrl.gameStart"> 
-        <div class="col-md-3 sidebar" ng-if="ctrl.gameStart">
+    <div class="row" ng-if="ctrl.gameStart && !ctrl.joinedAfterStart"> 
+        <div class="col-md-3 sidebar">
             <div style="float:right">
+                <h3>{{ctrl.myPlayer.board_piece}}</h3>
+                <h4>My cards:</h4>
+                <ul>
+                    <li ng-repeat="card in ctrl.myCards">{{card.type}}: {{card.name}}</li>
+                </ul>
                 <h4>{{ctrl.curPlayer.name}}'s Turn</h4>
                 <ul>
                     <li class="legend" ng-repeat="player in ctrl.testPlayers">
                         <div class="color-box" style="background:{{player.color}}"></div>
                         {{player.name}}
                     </li>
-                </ul>
-                <h4>My cards:</h4>
-                <ul>
-                    <li ng-repeat="card in ctrl.myCards">{{card.type}}: {{card.name}}</li>
                 </ul>
             </div>
         </div>

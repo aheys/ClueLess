@@ -7,7 +7,7 @@
             Suspect <span class="caret"></span>
         </button>
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Suspect">
-            <li role="menuitem" ng-repeat="suspect in suspects"><a href="" ng-click="addSuspect(suspect)">{{suspect}}</a></li>
+            <li role="menuitem" ng-repeat="suspect in suspects"><a href="" ng-click="addSuspect(suspect)">{{suspect.name}}</a></li>
         </ul>
     </div>
     
@@ -16,7 +16,7 @@
             Weapon <span class="caret"></span>
         </button>
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Weapon">
-            <li role="menuitem" ng-repeat="weapon in weapons"><a href="" ng-click="addWeapon(weapon)">{{weapon}}</a></li>
+            <li role="menuitem" ng-repeat="weapon in weapons"><a href="" ng-click="addWeapon(weapon)">{{weapon.weapon_name}}</a></li>
         </ul>
     </div>
     
@@ -25,12 +25,12 @@
             Room <span class="caret"></span>
         </button>
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room">
-            <li role="menuitem" ng-repeat="room in rooms"><a href="" ng-click="addRoom(room)">{{room.name}}</a></li>
+            <li role="menuitem"><a href="" ng-click="addRoom(room)">{{room.room_name}}</a></li>
         </ul>
     </div>
-    <p>Suspect: {{selection.suspect}}</p>
-    <p>Weapon: {{selection.weapon}}</p>
-    <p>Room: {{selection.room.name}}</p>
+    <p>Suspect: {{selection.suspect.name}}</p>
+    <p>Weapon: {{selection.weapon.weapon_name}}</p>
+    <p>Room: {{selection.room.room_name}}</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="selection.suspect==null || selection.room==null || selection.weapon==null">OK</button>

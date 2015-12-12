@@ -33,33 +33,10 @@ app.factory('ClientService', function() {
                     isTaken: false
                 }
             ];
-    var suspects = [
-        "Miss Scarlet",
-        "Col. Mustard",
-        "Mrs. White",
-        "Mr. Green",
-        "Mrs. Peacock",
-        "Prof. Plum"
-    ];
-    
-    var weapons = [
-        "Rope",
-        "Lead Pipe",
-        "Knife",
-        "Wrench",
-        "Candlestick",
-        "Revolver"
-    ];
-    
+   
     var service = {
         getGamePieces: function() {   
             return GamePieces;
-        },
-        getSuspects: function () {
-            return suspects;
-        },
-        getWeapons: function () {
-            return weapons;
         },
         MapLocationIdToXY: function (location_id) {
             if (location_id == 0)       //Study Room

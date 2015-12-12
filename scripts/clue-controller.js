@@ -53,6 +53,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.host = false;
         self.ableToSuggest = false;
         self.playerCount = 0;
+        self.moveMade = false;
     };
     
     self.startGame = function() {
@@ -67,14 +68,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.game_boards = response.data;
                 if (self.game_boards) {
                     if (self.game_boards.length == 0) {
-//                        self.createGameBoard();
                         //button for creating a new game if none exist
                         self.game_board = null;
                         self.createNewGame = true;
                     }
                     else {
                         self.game_board = response.data[0];
-                        self.setCards();
+                        self.getAllCards();
                         //if game already started
                         self.createNewGame = false;
                         if (self.game_board.game_in_play) {
@@ -89,6 +89,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 }
             },
             function (error) {
+                alert('Error getting gameboard, server may be down');
             }
         )
     };
@@ -98,10 +99,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 self.game_board = response.data;
+                self.getAllCards();
                 console.log(response);
                 self.getPlayers();
             },
             function (error) {
+                alert('Error creating gameboard');
             }
         )
     };
@@ -170,6 +173,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.reset();
             },
             function (error) {
+                alert("Error deleting gameboard!");
             }
         )   
     };
@@ -190,17 +194,29 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         )
     };
     
-    //this is currently unused, using getPlayers() and then finding my cards through getCardsByPlayerId
-    self.getPlayerById = function () {
-        self.promise = RestService.getOne('players', id);
+    self.getAllCards = function () {
+        self.promise = RestService.get('cards');
         self.promise.then(
             function (response) {
-                self.myCards = response.data.cards;
+                self.cards = response.data;
             },
             function (error) {
+                alert('Error getting cards');
             }
         )
-    };
+    }
+    
+    //this is currently unused, using getPlayers() and then finding my cards through getCardsByPlayerId
+//    self.getPlayerById = function () {
+//        self.promise = RestService.getOne('players', id);
+//        self.promise.then(
+//            function (response) {
+//                self.myCards = response.data.cards;
+//            },
+//            function (error) {
+//            }
+//        )
+//    };
     
     self.sendPlayerMove = function (location) {
         var data = {
@@ -212,21 +228,9 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 console.log(response);
-                self.isMyTurn = false;
-                self.getPlayers();
             },
             function (error) {
-            }
-        )
-    };
-    
-    self.getCards = function () {
-        self.promise = RestService.get('players');
-        self.promise.then(
-            function (response) {
-                console.log(response);
-            },
-            function (error) {
+                alert("Error making move!");
             }
         )
     };
@@ -269,35 +273,23 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             self.serverPlayers[i].y = obj.y;
             if (self.serverPlayers[i].player_in_turn == true) {
                 
-                //check if curPlayer is already set to the correct current player in turn
+                //check if curPlayer is already set to the correct current player in turn or if just one player is playing
                 //if not then set new curPlayer
-                if (self.curPlayer == null || self.curPlayer.id != self.serverPlayers[i].id) {
+                if (self.curPlayer == null || self.curPlayer.id != self.serverPlayers[i].id || self.playerCount==1) {
                     self.curPlayer = self.serverPlayers[i];
                     console.log(self.curPlayer.board_piece.name + "'s Turn");
                     
                     if (self.curPlayer.id == id) {
                         self.isMyTurn = true;
-                        if (self.curPlayer.location_id < 9) {
-                            self.ableToSuggest = true;
-                        }
+                        self.moveMade = false;
+                        self.ableToSuggest = self.checkIfAbleToSuggest(self.curPlayer.location_id);
                     }
                     else {
                         self.isMyTurn = false;
-                        self.ableToSuggest = false;
                     }
                 }
             }
         }
-    };
-    
-    self.setCards = function () {
-        self.cards = {}
-        self.cards.rooms = [];
-        self.cards.weapons = [];
-        self.cards.suspects = [];
-        for (var i=0; i<self.game_board.rooms.length; i++) {
-            self.cards.rooms.push(self.game_board.rooms[i]);
-        }  
     };
     
     /*
@@ -309,13 +301,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     self.makeMove = function (direction) {
         var x = self.curPlayer.x;
         var y = self.curPlayer.y;
-        
+
         if (direction == "up"){
             if (self.curPlayer.y > 0 && self.curPlayer.x%2 == 0){
                 y--;
             }
             else{
-                alert('invalid move');
+                alert('Invalid move, out of bounds!');
                 return;
             }
         }
@@ -324,7 +316,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 y++;
             }
             else {
-                alert('invalid move');
+                alert('invalid move, out of bounds!');
                 return;
             }
         }
@@ -333,16 +325,16 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 x--;
             }
             else {
-                alert('invalid move');
+                alert('invalid move, out of bounds!');
                 return;
             }
         }
-        else if (direction == "right") {
+        else  {     //direction == "right"
             if (self.curPlayer.x < MapSizeX-1 && self.curPlayer.y%2 == 0) {
                x++;
             }
             else {
-                alert('invalid move');
+                alert('invalid move, out of bounds!');
                 return;
             }
         }
@@ -353,21 +345,33 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             self.curPlayer.y = y;
         }
         else {
-            alert('invalid move');
+            alert('invalid move, hallway is occupied!');
             return;
         }
-            
+         
+        self.moveMade = true;
         var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
-        console.log(self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.curPlayer.x + ',' + self.curPlayer.y + ' - ' + locationId + '!');
-        self.serverPlayers[id] = self.curPlayer;
+        self.ableToSuggest = self.checkIfAbleToSuggest(locationId);
+        console.log("AbleToSuggest is: " +self.ableToSuggest + " at " + locationId);
+//        console.log(self.curPlayer.board_piece.name + ' is moving ' + dire    ction + ' to ' + x + ',' + y + ' - ' + locationId + '!');
         self.sendPlayerMove(locationId);
         
         
     };
     
     self.endTurn = function () {
-        var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
-        self.sendPlayerMove(locationId);
+        self.promise = RestService.postAction('players', id, "end_turn", '');
+        self.promise.then(
+            function (response) {
+                console.log(response);
+                self.getPlayers();
+                self.isMyTurn = false;
+                self.moveMade = false;
+            },
+            function (error) {
+                alert ('Error ending turn');
+            }
+        )
     }
     
     //this function is untested
@@ -387,6 +391,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             return true;
         }
     };
+    
+    self.checkIfAbleToSuggest = function (location) {
+        return (location < 9);
+    }
         
     //Turned off for developing, calls getPlayers every 2 seconds
     $interval((function () {
@@ -409,13 +417,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     return title;
                 },
                 suspects: function () {
-                    return ClientService.getSuspects();
+                    return self.cards.suspects;
                 },
                 weapons: function () {
-                    return ClientService.getWeapons();
+                    return self.cards.weapons;
                 },
-                rooms: function () {
-                    return self.cards.rooms;
+                room: function () {
+                    return self.cards.rooms[self.curPlayer.location_id];
                 },
             }
         });

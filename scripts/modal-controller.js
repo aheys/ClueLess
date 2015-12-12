@@ -1,4 +1,4 @@
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, title, suspects, weapons, rooms) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, title, suspects, weapons, room) {
 
     $scope.title = title;
 
@@ -9,10 +9,10 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, title, 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-    console.log(rooms);
+    console.log(room);
     $scope.weapons = weapons;
     $scope.suspects = suspects;
-    $scope.rooms = rooms;
+    $scope.room = room;
     
     $scope.selection = {};
     $scope.selection.suspect=null;

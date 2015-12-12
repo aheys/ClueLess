@@ -1,4 +1,4 @@
-app.controller("clueCtrl", function($scope, $log, $interval, ClientService, RestService) {
+app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientService, RestService) {
     var self = this;
     
     // cg-busy
@@ -209,6 +209,17 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
         )
     };
     
+    self.getCards = function () {
+        self.promise = RestService.get('players');
+        self.promise.then(
+            function (response) {
+                console.log(response);
+            },
+            function (error) {
+            }
+        )
+    };
+    
     self.getCardsByPlayerId = function () {
         self.myCards = self.serverPlayers[id].cards;
     };
@@ -349,11 +360,41 @@ app.controller("clueCtrl", function($scope, $log, $interval, ClientService, Rest
     };
         
     //Turned off for developing, calls getPlayers every 2 seconds
-    $interval((function () {
-        if (self.isMyTurn == false) {
-            self.getPlayers();
-        }
-    }), 3000)
+//    $interval((function () {
+//        if (self.isMyTurn == false) {
+//            self.getPlayers();
+//        }
+//    }), 3000)
+    
+
+    //Modal Window for user suggestion/accusation, modal-controller.js holds logic
+    self.openModal = function (title) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'scripts/myModalContent.html',
+            controller: 'ModalInstanceCtrl',
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                suspects: function () {
+                    return ClientService.getSuspects();
+                },
+                weapons: function () {
+                    return ClientService.getWeapons();
+                },
+                rooms: function () {
+                    return ClientService.getRooms();
+                },
+            }
+        });
+
+        modalInstance.result.then(function (selection) {
+            self.userSelection = selection;
+            //do something with selection now
+        }, function () {
+            });
+    };
     
     self.initGame();
-})
+});

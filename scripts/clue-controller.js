@@ -1,10 +1,6 @@
 app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientService, RestService) {
     var self = this;
-    /*
-    TO DO: FIX gameboard.js piece color
-    player must do move after suggestion
-    get cards route
-    */
+
     // cg-busy
     self.delay = 0;
     self.minDuration = 0;
@@ -399,13 +395,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     self.checkIfAbleToSuggest = function (location) {
         return (location < 9);
     }
-        
-    //Turned off for developing, calls getPlayers every 2 seconds
-    $interval((function () {
-        if (self.isMyTurn == false) {
-            self.getPlayers();
-        }
-    }), 3000)
     
 
     //Modal Window for user suggestion/accusation, modal-controller.js holds logic
@@ -432,7 +421,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
         //return suggestion/accusation
         modalInstance.result.then(function (selection) {
-            self.userSelection = selection;
             if (selection.type == "Suggestion") {
                 self.suggestionMade = true;
             }
@@ -440,10 +428,43 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             else {
                 
             }
-            //do something with selection now
+            self.sendSelection(selection);
         }, function () {
             });
     };
+    
+    //sendSelection implements send suggestion and accusation
+    self.sendSelection = function (selection) {
+        var data = {
+            "location_id" : selection.room.name,
+            "weapon_id" : selection.weapon.name,
+            "suspect_id" : selection.suspect.name
+        };
+        var route;
+        if (selection.type == "Suggestion") {
+            route = "suggest";
+        }
+        else 
+            route = "accuse";
+        
+        console.log(data);
+        self.promise = RestService.postAction('players', id, route, data);
+        self.promise.then(
+            function (response) {
+                console.log(response);
+            },
+            function (error) {
+                alert("Error sending selection!");
+            })
+    };
+    
+    //Turned off for developing, calls getPlayers every 2 seconds
+    $interval((function () {
+        if (self.isMyTurn == false) {
+            self.getPlayers();
+        }
+    }), 3000)
+    
     
     self.initGame();
 });

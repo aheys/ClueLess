@@ -1,6 +1,12 @@
 app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientService, RestService) {
     var self = this;
-    
+    /*
+    TO DO: FIX gameboard.js piece color
+    modal window: rooms, suspects, and weapons
+    player must do move after suggestion
+    player only gets one move per turn
+    get cards route
+    */
     // cg-busy
     self.delay = 0;
     self.minDuration = 0;
@@ -45,6 +51,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.joinedAfterStart = false;
         self.createNewGame = false;
         self.host = false;
+        self.ableToSuggest = false;
         self.playerCount = 0;
     };
     
@@ -270,9 +277,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     
                     if (self.curPlayer.id == id) {
                         self.isMyTurn = true;
+                        if (self.curPlayer.location_id < 9) {
+                            self.ableToSuggest = true;
+                        }
                     }
                     else {
                         self.isMyTurn = false;
+                        self.ableToSuggest = false;
                     }
                 }
             }
@@ -354,6 +365,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         
     };
     
+    self.endTurn = function () {
+        var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
+        self.sendPlayerMove(locationId);
+    }
     
     //this function is untested
     self.checkIfMoveValid = function (x, y) {
@@ -383,6 +398,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
     //Modal Window for user suggestion/accusation, modal-controller.js holds logic
     self.openModal = function (title) {
+        console.log(self.cards.rooms);
+        console.log(self.curPlayer);
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'scripts/myModalContent.html',

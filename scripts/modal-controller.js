@@ -9,7 +9,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, title, 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-    
+    console.log(rooms);
     $scope.weapons = weapons;
     $scope.suspects = suspects;
     $scope.rooms = rooms;

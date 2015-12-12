@@ -304,7 +304,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 y--;
             }
             else{
-                console.log('invalid move');
+                alert('invalid move');
                 return;
             }
         }
@@ -313,7 +313,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 y++;
             }
             else {
-                console.log('invalid move');
+                alert('invalid move');
                 return;
             }
         }
@@ -322,7 +322,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 x--;
             }
             else {
-                console.log('invalid move');
+                alert('invalid move');
                 return;
             }
         }
@@ -331,7 +331,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                x++;
             }
             else {
-                console.log('invalid move');
+                alert('invalid move');
                 return;
             }
         }
@@ -342,7 +342,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             self.curPlayer.y = y;
         }
         else {
-            console.log('invalid move');
+            alert('invalid move');
             return;
         }
             

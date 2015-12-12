@@ -27,6 +27,29 @@ app.directive("gameboard", function() {
                 img.src = imageSrc[x];
                 gamePieces.push(img);
             }
+            
+            //for lack of a better way of mapping gamepiece images to players
+            var playerPieces = [];
+            for (x=0; x<$scope.players.length; x++) {
+                if ($scope.players[x].board_piece.name == "Miss Scarlet") {
+                    playerPieces.push(gamePieces[0]);
+                }
+                else if ($scope.players[x].board_piece.name == "Col. Mustard") {
+                    playerPieces.push(gamePieces[1]);
+                }
+                else if ($scope.players[x].board_piece.name == "Mrs. White") {
+                    playerPieces.push(gamePieces[2]);
+                }
+                else if ($scope.players[x].board_piece.name == "Mr. Green") {
+                    playerPieces.push(gamePieces[3]);
+                }
+                else if ($scope.players[x].board_piece.name == "Mrs. Peacock") {
+                    playerPieces.push(gamePieces[4]);
+                }
+                else {// "Prof. Plum" 
+                    playerPieces.push(gamePieces[5]);
+                }
+            }
                                     
             canvas.width = 800;
             canvas.height = 600;
@@ -159,7 +182,7 @@ app.directive("gameboard", function() {
                 //loop through players and draw each piece
                 for (var i in $scope.players) {
                     var player = $scope.players[i];
-                    ctx.drawImage(gamePieces[i], //player.position ***NEED TO FIX***
+                    ctx.drawImage(playerPieces[i], //player.position ***NEED TO FIX***
                                   Map[player.y][player.x].x - gamePieces[0].width/2 + 12, //offset of 12 due to resizing from 64 px to 40px
                                   Map[player.y][player.x].y - gamePieces[0].height/2 + 12, 
                                   40, 40)

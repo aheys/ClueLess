@@ -2,9 +2,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     var self = this;
     /*
     TO DO: FIX gameboard.js piece color
-    modal window: rooms, suspects, and weapons
     player must do move after suggestion
-    player only gets one move per turn
     get cards route
     */
     // cg-busy
@@ -54,6 +52,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.ableToSuggest = false;
         self.playerCount = 0;
         self.moveMade = false;
+        self.suggestionMade = false;
     };
     
     self.startGame = function() {
@@ -350,7 +349,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         }
          
         self.moveMade = true;
+
+        //Player cannot suggest again until moving
+        self.suggestionMade = false;
+        
         var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
+        self.curPlayer.location_id = locationId;
         self.ableToSuggest = self.checkIfAbleToSuggest(locationId);
         console.log("AbleToSuggest is: " +self.ableToSuggest + " at " + locationId);
 //        console.log(self.curPlayer.board_piece.name + ' is moving ' + dire    ction + ' to ' + x + ',' + y + ' - ' + locationId + '!');
@@ -405,16 +409,14 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
 
     //Modal Window for user suggestion/accusation, modal-controller.js holds logic
-    self.openModal = function (title) {
-        console.log(self.cards.rooms);
-        console.log(self.curPlayer);
+    self.openModal = function (type) {
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'scripts/myModalContent.html',
             controller: 'ModalInstanceCtrl',
             resolve: {
-                title: function () {
-                    return title;
+                type: function () {
+                    return type;
                 },
                 suspects: function () {
                     return self.cards.suspects;
@@ -428,8 +430,16 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }
         });
 
+        //return suggestion/accusation
         modalInstance.result.then(function (selection) {
             self.userSelection = selection;
+            if (selection.type == "Suggestion") {
+                self.suggestionMade = true;
+            }
+            //Accusation
+            else {
+                
+            }
             //do something with selection now
         }, function () {
             });

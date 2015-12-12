@@ -113,13 +113,15 @@
                         </button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-info" ng-click="ctrl.openModal('Suggestion')" ng-disabled="!ctrl.isMyTurn || !ctrl.ableToSuggest">Suggestion</button>
+                        <button type="button" class="btn btn-info" ng-click="ctrl.openModal('Suggestion')" 
+                                ng-disabled="!ctrl.isMyTurn || !ctrl.ableToSuggest || ctrl.suggestionMade">Suggestion</button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn btn-danger" ng-click="ctrl.openModal('Accusation')" ng-disabled="!ctrl.isMyTurn">Accusation</button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" ng-click="ctrl.endTurn()" ng-disabled="!ctrl.isMyTurn">End Turn</button>
+                        <button type="button" class="btn" ng-click="ctrl.endTurn()" ng-class="ctrl.moveMade == true ? 'btn-warning' : 'btn-default'"
+                                ng-disabled="!ctrl.isMyTurn">End Turn</button>
                     </div>
                 </div>
             </div>

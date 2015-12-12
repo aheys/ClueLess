@@ -52,7 +52,7 @@ app.factory('ClientService', function() {
             else if (location_id == 5)  //Lounge
                 return {x: 4, y: 0};
             else if (location_id == 6)  //Dining Room
-                return {x: 2, y: 4};
+                return {x: 4, y: 2};
             else if (location_id == 7)  //Kitchen
                 return {x: 4, y: 4};
             else if (location_id == 8)  //Hall Room

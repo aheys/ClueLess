@@ -1,6 +1,6 @@
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, title, suspects, weapons, room) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, type, suspects, weapons, room) {
 
-    $scope.title = title;
+    $scope.type = type;
 
     $scope.ok = function () {
         $uibModalInstance.close($scope.selection);
@@ -15,6 +15,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, title, 
     $scope.room = room;
     
     $scope.selection = {};
+    $scope.selection.type = type;
     $scope.selection.suspect=null;
     $scope.selection.weapon=null;
     $scope.selection.room=null;

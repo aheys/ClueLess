@@ -25,12 +25,12 @@
             Room <span class="caret"></span>
         </button>
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room">
-            <li role="menuitem" ng-repeat="room in rooms"><a href="" ng-click="addRoom(room)">{{room}}</a></li>
+            <li role="menuitem" ng-repeat="room in rooms"><a href="" ng-click="addRoom(room)">{{room.name}}</a></li>
         </ul>
     </div>
     <p>Suspect: {{selection.suspect}}</p>
     <p>Weapon: {{selection.weapon}}</p>
-    <p>Room: {{selection.room}}</p>
+    <p>Room: {{selection.room.name}}</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="selection.suspect==null || selection.room==null || selection.weapon==null">OK</button>

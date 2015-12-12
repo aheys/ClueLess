@@ -67,6 +67,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     }
                     else {
                         self.game_board = response.data[0];
+                        self.setCards();
                         //if game already started
                         self.createNewGame = false;
                         if (self.game_board.game_in_play) {
@@ -182,6 +183,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         )
     };
     
+    //this is currently unused, using getPlayers() and then finding my cards through getCardsByPlayerId
     self.getPlayerById = function () {
         self.promise = RestService.getOne('players', id);
         self.promise.then(
@@ -193,16 +195,18 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         )
     };
     
-    //not working for some reason
     self.sendPlayerMove = function (location) {
-        console.log(location)
         var data = {
-            "location": location
+            "player_id": id,
+            "location_id": location
         };
+        console.log(data);
         self.promise = RestService.postAction('players', id, "move", data);
         self.promise.then(
             function (response) {
                 console.log(response);
+                self.isMyTurn = false;
+                self.getPlayers();
             },
             function (error) {
             }
@@ -273,6 +277,16 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 }
             }
         }
+    };
+    
+    self.setCards = function () {
+        self.cards = {}
+        self.cards.rooms = [];
+        self.cards.weapons = [];
+        self.cards.suspects = [];
+        for (var i=0; i<self.game_board.rooms.length; i++) {
+            self.cards.rooms.push(self.game_board.rooms[i]);
+        }  
     };
     
     /*
@@ -360,11 +374,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
         
     //Turned off for developing, calls getPlayers every 2 seconds
-//    $interval((function () {
-//        if (self.isMyTurn == false) {
-//            self.getPlayers();
-//        }
-//    }), 3000)
+    $interval((function () {
+        if (self.isMyTurn == false) {
+            self.getPlayers();
+        }
+    }), 3000)
     
 
     //Modal Window for user suggestion/accusation, modal-controller.js holds logic
@@ -384,7 +398,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     return ClientService.getWeapons();
                 },
                 rooms: function () {
-                    return ClientService.getRooms();
+                    return self.cards.rooms;
                 },
             }
         });

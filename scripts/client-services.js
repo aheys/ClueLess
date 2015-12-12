@@ -51,27 +51,12 @@ app.factory('ClientService', function() {
         "Revolver"
     ];
     
-    var rooms = [
-        "Study",
-        "Hall",
-        "Lounge",
-        "Library",
-        "Billiard Room",
-        "Dining Room",
-        "Conservatory",
-        "Ballroom",
-        "Kitchen"
-    ];
-    
     var service = {
         getGamePieces: function() {   
             return GamePieces;
         },
         getSuspects: function () {
             return suspects;
-        },
-        getRooms: function () {
-            return rooms;
         },
         getWeapons: function () {
             return weapons;

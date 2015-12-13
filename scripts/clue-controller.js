@@ -9,8 +9,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     self.promise = null;
     
     
-    self.gamePieces = ClientService.getGamePieces();
-        
     var MapSizeX = 5;
     var MapSizeY = 5;
     
@@ -30,9 +28,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
     
     self.reset = function () {
-        for (var j=0; j<self.gamePieces.length; j++) {
-            self.gamePieces[j].isTaken = false;
-        }
         
         var id = null;
         self.myPlayer = null;
@@ -43,7 +38,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.gameStart = false;
         self.game_board = null;
         self.joinedAfterStart = false;
-        self.createNewGame = false;
         self.host = false;
         self.ableToSuggest = false;
         self.playerCount = 0;
@@ -67,13 +61,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     if (self.game_boards.length == 0) {
                         //button for creating a new game if none exist
                         self.game_board = null;
-                        self.createNewGame = true;
                     }
                     else {
                         self.game_board = response.data[0];
                         self.getAllCards();
                         //if game already started
-                        self.createNewGame = false;
                         if (self.game_board.game_in_play) {
                             self.gameStart = true;
                             self.joinedAfterStart = true;
@@ -129,7 +121,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
                     }
                 }
-                if (!self.game_board || (self.gameStart && self.playerCount==0)) {
+                if (!self.game_board) {
                     self.getGameBoard();
                 }
             },
@@ -196,12 +188,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 self.cards = response.data;
+                console.log(self.cards);
             },
             function (error) {
                 alert('Error getting cards');
             }
         )
-    }
+    };
     
     //this is currently unused, using getPlayers() and then finding my cards through getCardsByPlayerId
 //    self.getPlayerById = function () {
@@ -238,12 +231,22 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
     //set game pieces to taken so that a user cannot click on a button for that character
     self.setPiecesTaken = function () {
+        
+        //this assumes suspects stay in order: Scarlet, Mustard, etc.
+        var suspectColors = [
+            "orange",
+            "yellow",
+            "white",
+            "lightgreen",
+            "#0066FF",
+            "purple",
+        ];
         self.playersColors = [];
         for (var i=0; i<self.playerCount; i++) {
-            for (var j=0; j<self.gamePieces.length; j++) {
-                if (self.serverPlayers[i].board_piece.name == self.gamePieces[j].name)  {   
-                    self.gamePieces[j].isTaken = true;
-                    self.playersColors[i] = self.gamePieces[j].color;
+            for (var j=0; j<self.cards.suspects.length; j++) {
+                if (self.serverPlayers[i].board_piece.name == self.cards.suspects[j].name)  { 
+                    self.cards.suspects[j].isTaken = true;
+                    self.playersColors[i] = suspectColors[j];
                 }
             }
         }
@@ -471,11 +474,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
     
     //Turned off for developing, calls getPlayers every 2 seconds
-    $interval((function () {
-        if (self.isMyTurn == false) {
-            self.getPlayers();
-        }
-    }), 3000)
+//    $interval((function () {
+//        if (self.isMyTurn == false) {
+//            self.getPlayers();
+//        }
+//    }), 3000)
     
     
     self.initGame();

@@ -1,43 +1,6 @@
 app.factory('ClientService', function() {
     
-    
-    var GamePieces = [
-                {
-                    name: "Miss Scarlet",
-                    color: "orange",
-                    isTaken: false
-                },
-                {
-                    name: "Col. Mustard",
-                    color: "yellow",
-                    isTaken: false
-                },
-                {
-                    name: "Mrs. White",
-                    color: "white",
-                    isTaken: false
-                },
-                {
-                    name: "Mr. Green",
-                    color: "lightgreen",
-                    isTaken: false
-                },
-                {
-                    name: "Mrs. Peacock",
-                    color: "#0066FF",
-                    isTaken: false
-                },
-                {
-                    name: "Prof. Plum",
-                    color: "purple",
-                    isTaken: false
-                }
-            ];
-   
     var service = {
-        getGamePieces: function() {   
-            return GamePieces;
-        },
         MapLocationIdToXY: function (location_id) {
             if (location_id == 0)       //Study Room
                 return {x: 0, y: 0};

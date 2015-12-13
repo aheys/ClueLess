@@ -2,7 +2,8 @@ app.directive("gameboard", function() {
     return {
         restrict: "A",
         scope: {
-            players: "="  
+            players: "=",
+            gamePieces: "="
         },
         link: function($scope, $element) {
             console.log($scope.players);
@@ -22,33 +23,33 @@ app.directive("gameboard", function() {
             imageSrc[4] = "assets/gamepieces/pieceBlue_border00.png";
             imageSrc[5] = "assets/gamepieces/piecePurple_border00.png";
             
-            var gamePieces = [];
+            var gamePieceImgs = [];
             for (x=0; x<imageSrc.length; x++) {
                 var img = new Image();
                 img.src = imageSrc[x];
-                gamePieces.push(img);
+                gamePieceImgs.push(img);
             }
             
-            //for lack of a better way of mapping gamepiece images to players
+            //this assumes gamePieces is in the same order as the imageSrc array is loaded starting with Scarlet
             var playerPieces = [];
             for (x=0; x<$scope.players.length; x++) {
-                if ($scope.players[x].board_piece.name == "Miss Scarlet") {
-                    playerPieces.push(gamePieces[0]);
+                if ($scope.players[x].board_piece.name == $scope.gamePieces[0].name) {
+                    playerPieces.push(gamePieceImgs[0]);
                 }
-                else if ($scope.players[x].board_piece.name == "Col. Mustard") {
-                    playerPieces.push(gamePieces[1]);
+                else if ($scope.players[x].board_piece.name == $scope.gamePieces[1].name) {
+                    playerPieces.push(gamePieceImgs[1]);
                 }
-                else if ($scope.players[x].board_piece.name == "Mrs. White") {
-                    playerPieces.push(gamePieces[2]);
+                else if ($scope.players[x].board_piece.name == $scope.gamePieces[2].name) {
+                    playerPieces.push(gamePieceImgs[2]);
                 }
-                else if ($scope.players[x].board_piece.name == "Mr. Green") {
-                    playerPieces.push(gamePieces[3]);
+                else if ($scope.players[x].board_piece.name == $scope.gamePieces[3].name) {
+                    playerPieces.push(gamePieceImgs[3]);
                 }
-                else if ($scope.players[x].board_piece.name == "Mrs. Peacock") {
-                    playerPieces.push(gamePieces[4]);
+                else if ($scope.players[x].board_piece.name == $scope.gamePieces[4].name) {
+                    playerPieces.push(gamePieceImgs[4]);
                 }
-                else {// "Prof. Plum" 
-                    playerPieces.push(gamePieces[5]);
+                else {
+                    playerPieces.push(gamePieceImgs[5]);
                 }
             }
                                     
@@ -184,8 +185,8 @@ app.directive("gameboard", function() {
                 for (var i in $scope.players) {
                     var player = $scope.players[i];
                     ctx.drawImage(playerPieces[i], //player.position ***NEED TO FIX***
-                                  Map[player.y][player.x].x - gamePieces[0].width/2 + 12, //offset of 12 due to resizing from 64 px to 40px
-                                  Map[player.y][player.x].y - gamePieces[0].height/2 + 12, 
+                                  Map[player.y][player.x].x - gamePieceImgs[0].width/2 + 12, //offset of 12 due to resizing from 64 px to 40px
+                                  Map[player.y][player.x].y - gamePieceImgs[0].height/2 + 12, 
                                   40, 40)
                 }
             }

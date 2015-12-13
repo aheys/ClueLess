@@ -53,14 +53,14 @@
     
     <!-- Pre-Game Setup -->
     <div class="row" ng-if="!ctrl.gameStart && ctrl.game_board">        
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-8 col-md-offset-2">
             <div class="text-center">
                 <h4 ng-if="ctrl.myPlayer==null">Select your character:</h4>
                 <h4 ng-if="ctrl.myPlayer">Waiting on other players...</h4>
                 <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" ng-repeat="piece in ctrl.gamePieces"
-                            ng-click="ctrl.pieceSelected(piece)" ng-disabled="piece.isTaken || ctrl.myPlayerAdded">
-                        {{piece.name}}
+                    <button type="button" class="btn btn-default" ng-repeat="suspect in ctrl.cards.suspects"
+                            ng-click="ctrl.pieceSelected(suspect)" ng-disabled="suspect.isTaken || ctrl.myPlayerAdded">
+                        {{suspect.name}}
                     </button>
                 </div>
                 <p ng-if="ctrl.playerCount<3" class="text-warning center-text">3 players are required to start, set to 1 for development</p>
@@ -92,7 +92,7 @@
         </div>
         <div class="col-md-6">
             <div class="text-center">
-                <canvas gameboard id="myCanvas" width="800" height="600" players="ctrl.serverPlayers">
+                <canvas gameboard id="myCanvas" width="800" height="600" players="ctrl.serverPlayers" game-pieces="ctrl.cards.suspects">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
                 <div class="btn-toolbar center-toolbar" role="toolbar" aria-label="...">

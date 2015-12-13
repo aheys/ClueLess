@@ -301,10 +301,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         }
     };
     
-    /*
-        Need to add: checkMove() to check if hallway is occupied, handle secret pathways
-    */
-    
     
     //update coordinates of player, curPlayer is now next player to update turn
     self.makeMove = function (direction) {
@@ -387,9 +383,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 alert ('Error ending turn');
             }
         )
-    }
+    };
     
-    //this function is untested
     self.checkIfMoveValid = function (x, y) {
         //first check if it is hall
         //hallways are all located at odd combinations of x+y, if x+y is even it cannot be a hallway
@@ -405,6 +400,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }
             return true;
         }
+    };
+    
+    self.takeSecretPassage = function () {
+        
+        
+        self.moveMade = true;  
     };
     
     self.checkIfAbleToSuggest = function (location) {
@@ -474,11 +475,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
     
     //Turned off for developing, calls getPlayers every 2 seconds
-//    $interval((function () {
-//        if (self.isMyTurn == false) {
-//            self.getPlayers();
-//        }
-//    }), 3000)
+    $interval((function () {
+        if (self.isMyTurn == false) {
+            self.getPlayers();
+        }
+    }), 3000)
     
     
     self.initGame();

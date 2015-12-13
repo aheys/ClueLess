@@ -28,9 +28,9 @@
             <li role="menuitem"><a href="" ng-click="addRoom(room)">{{room.item_name}}</a></li>
         </ul>
     </div>
-    <p>Suspect: {{selection.suspect.name}}</p>
-    <p>Weapon: {{selection.weapon.weapon_name}}</p>
-    <p>Room: {{selection.room.room_name}}</p>
+    <p>Suspect: {{selection.suspect.item_name}}</p>
+    <p>Weapon: {{selection.weapon.item_name}}</p>
+    <p>Room: {{selection.room.item_name}}</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="selection.suspect==null || selection.room==null || selection.weapon==null">OK</button>

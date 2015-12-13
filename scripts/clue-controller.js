@@ -21,10 +21,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
     self.initGame = function() {
         self.reset();
-        //Get current gameboard, if none exists createGameBoard() is called
-        //after getting the gameboard, getPlayers() is called
+        //Get current gameboard
         self.getGameBoard();
-        
     };
     
     self.reset = function () {
@@ -32,6 +30,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         var id = null;
         self.myPlayer = null;
         self.myCards = null;
+        self.cards = null;
         self.curPlayer = null;
         self.myPlayerAdded = false;
         self.isMyTurn = false;
@@ -59,21 +58,41 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.game_boards = response.data;
                 if (self.game_boards) {
                     if (self.game_boards.length == 0) {
-                        //button for creating a new game if none exist
                         self.game_board = null;
                     }
                     else {
                         self.game_board = response.data[0];
-                        self.getAllCards();
-                        //if game already started
-                        if (self.game_board.game_in_play) {
+                        self.serverPlayers = self.game_board.players;
+                        self.playerCount = self.serverPlayers.length;
+                        
+                        console.log(self.game_board);
+                        
+                        //if player joins after game already started
+                        if (self.game_board.game_in_play && !self.myPlayerAdded) {
                             self.gameStart = true;
                             self.joinedAfterStart = true;
+                            return;
+                        }
+                        
+                        //game has just started, set my cards
+                        if (self.gameStart == false && self.game_board.game_in_play == true) {
+                            self.getCardsByPlayerId();
+                        }
+                        
+                        self.gameStart = self.game_board.game_in_play;
+                        
+                        if (!self.cards)
+                            self.getAllCards();
+                        
+                        if (self.playerCount>0) {
+                            if (!self.gameStart && self.cards) {
+                                self.setPiecesTaken();
+                            }
+                            else { //gameStart == true, main update loop
+                                self.updatePlayers();
+                            }
                         }
 
-                        self.getPlayers();
-
-                        console.log(self.game_board);
                     }
                 }
             },
@@ -87,54 +106,16 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise = RestService.post('game_boards', '');
         self.promise.then(
             function (response) {
-                self.game_board = response.data;
                 self.getAllCards();
                 console.log(response);
-                self.getPlayers();
+                self.getGameBoard();
             },
             function (error) {
                 alert('Error creating gameboard');
             }
         )
     };
-    
-    self.getPlayers = function () {
-        self.promise = RestService.get('players');
-        self.promise.then(
-            function (response) {
-                self.serverPlayers = response.data;
-                console.log(self.serverPlayers);
-                self.playerCount = self.serverPlayers.length;
-                if (self.playerCount>0) {
-                    if (!self.gameStart) {
-                        self.setPiecesTaken();
-
-                        //only way I can see if game starts from a remote player waiting in lobby
-                        if (self.serverPlayers[0].player_in_turn == true) {
-                            self.getCardsByPlayerId();
-                            self.updatePlayers();
-                            self.gameStart=true;
-                        }
-                    }
-                    if (self.gameStart && !self.joinedAfterStart) {
-                        self.updatePlayers();
-
-                    }
-                }
-                if (!self.game_board) {
-                    self.getGameBoard();
-                }
-            },
-            function (error) {
-                //if game is deleted reset client variables
-                if (self.gameStart) {
-                    self.reset();
-                }
-                self.getGameBoard();
-            }
-        )
-    };
-    
+        
     self.addPlayer = function (player) {
         var data = {
             "board_piece": player
@@ -171,12 +152,9 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise = RestService.post('game_boards/start_game', '');
         self.promise.then(
             function (response) {
-                //I have to re-grab players() in order to get my player's cards after the game has started
-//                self.getCardsByPlayerId();
-//                self.gameStart=true;   
                 
-                //I have to getPlayers() again to set location_id now that they are set from startGameBoard()
-                self.getPlayers();
+                //I have to getGameBoard() again to set location_id now that they are set from startGameBoard()
+                self.getGameBoard();
             },
             function (error) {
             }
@@ -189,24 +167,15 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             function (response) {
                 self.cards = response.data;
                 console.log(self.cards);
+                
+                //adding setPieces because cards don't load until after it would normally be called on startup
+                self.setPiecesTaken();
             },
             function (error) {
                 alert('Error getting cards');
             }
         )
     };
-    
-    //this is currently unused, using getPlayers() and then finding my cards through getCardsByPlayerId
-//    self.getPlayerById = function () {
-//        self.promise = RestService.getOne('players', id);
-//        self.promise.then(
-//            function (response) {
-//                self.myCards = response.data.cards;
-//            },
-//            function (error) {
-//            }
-//        )
-//    };
     
     self.sendPlayerMove = function (location) {
         var data = {
@@ -220,7 +189,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 console.log(response);
             },
             function (error) {
-                alert("Error making move!");
+                alert("Error making move to " + location);
             }
         )
     };
@@ -265,7 +234,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         }
     };
     
-    //confusing language here, curPlayer is the most recent player_in_turn from getPlayers() call
+    //confusing language here, curPlayer is the most recent player_in_turn from getGameBoard() call
     self.updatePlayers = function () {
         for (var i=0; i<self.playerCount; i++) {
             var obj = ClientService.MapLocationIdToXY(self.serverPlayers[i].location_id);
@@ -285,7 +254,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         self.moveMade = false;
                         self.ableToSuggest = self.checkIfAbleToSuggest(location);
                         if (location < 9) {
-                            if (self.game_board.rooms[location].secret_passage)
+                            if (self.game_board.board.rooms[location].secret_passage != null)
                                 self.secretPassageAvailable = true;
                             else 
                                 self.secretPassageAvailable = false;
@@ -362,15 +331,21 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
         self.curPlayer.location_id = locationId;
         self.ableToSuggest = self.checkIfAbleToSuggest(locationId);
-//        console.log(self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + x + ',' + y + ' - ' + locationId + '!');
-        self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + locationId + '!\n';
         self.sendPlayerMove(locationId);
         
+        //split into below 9 for rooms and 9 or greater for halls
+        //gameboard returns 2 arrays: rooms and halls, index is based on id, but halls start after rooms so id=9 mean index 0
         if (locationId < 9) {
-            if (self.game_board.rooms[locationId].secret_passage)
+            if (self.game_board.board.rooms[locationId].secret_passage) {
                 self.secretPassageAvailable = true;
-            else 
+            }
+            else {
                 self.secretPassageAvailable = false;
+            }
+            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.rooms[self.curPlayer.location_id].name + '!\n';
+        }
+        else {
+            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.halls[self.curPlayer.location_id-9].name + '!\n';
         }
         
         
@@ -381,7 +356,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 console.log(response);
-                self.getPlayers();
+                self.getGameBoard();
                 self.isMyTurn = false;
                 self.moveMade = false;
             },
@@ -410,8 +385,15 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
     self.takeSecretPassage = function () {
         
-        
+        var location = self.game_board.board.rooms[self.curPlayer.location_id].secret_passage;
+        self.sendPlayerMove(location);
+        self.messageLog+= self.curPlayer.board_piece.name + ' is taking secret passage to ' + self.game_board.board.rooms[location].name + '!\n';
         self.moveMade = true;  
+        
+        //update client position
+        var obj = ClientService.MapLocationIdToXY(location);
+        self.curPlayer.x = obj.x;
+        self.curPlayer.y = obj.y;
     };
     
     self.checkIfAbleToSuggest = function (location) {
@@ -474,6 +456,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 console.log(response);
+                self.getGameBoard();
             },
             function (error) {
                 alert("Error sending selection!");
@@ -497,10 +480,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             });
     };
     
-    //Turned off for developing, calls getPlayers every 2 seconds
+    //Turned off for developing, calls getGameBoard every 2 seconds
     $interval((function () {
         if (self.isMyTurn == false) {
-            self.getPlayers();
+            self.getGameBoard();
         }
     }), 3000)
     

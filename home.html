@@ -13,10 +13,6 @@
         <script src="bower_components/angular-animate/angular-animate.js"></script>
         <script src="bower_components/angular-busy/dist/angular-busy.js"></script>
         
-        <!-- Restangular -->
-        <script src="bower_components/lodash/lodash.js"></script>
-        <script src="bower_components/restangular/dist/restangular.js"></script>
-        
         <!-- Source Scripts -->
         <script src="scripts/app.js"></script>
         <script src="scripts/gameboard.js"></script>
@@ -32,7 +28,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">Debugging Header</a>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.createGameBoard()">Create Game</button>
-            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getPlayers()">Update Players</button>
+            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getGameBoard()">Update Game</button>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.openDisputeModal()">Open Dispute Modal</button>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.deleteGameBoard()">Delete Game</button>
             If game already started, delete & create a new one
@@ -112,7 +108,7 @@
                         </button>
                     </div>
                     <div class="btn-group" role="group" aria-label="..." ng-if="ctrl.secretPassageAvailable">
-                        <button type="button" class="btn btn-info" ng-click="self.takeSecretPassage()" 
+                        <button type="button" class="btn btn-info" ng-click="ctrl.takeSecretPassage()" 
                                 ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">Secret Passage</button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">

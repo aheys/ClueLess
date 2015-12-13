@@ -1,4 +1,4 @@
-app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($http, $q, $log, Restangular) {
+app.factory('RestService', ['$http', '$q', '$log', function ($http, $q, $log) {
     
     //Heroku Server
     var url = 'https://clueless-server.herokuapp.com/';
@@ -10,7 +10,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
         get: function (name) {
                 $log.debug("getting list of " + name);
                 var deferredPromise = $q.defer();
-//                Restangular.all(name).getList()
                 $http({
                     method: 'GET',
                     url: url+name
@@ -29,7 +28,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
         getOne: function (name, id) {
                 $log.debug("getting " + name + " by id - " + id);
                 var deferredPromise = $q.defer();
-//                Restangular.one(name, id).get()
                 $http({
                     method: 'GET',
                     url: url+name+'/'+id
@@ -47,7 +45,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
         post: function (name, newData) {
                 $log.debug("adding new data " + angular.toJson(newData) + " to " + name);
                 var deferredPromise = $q.defer();
-//                Restangular.all(name).post(angular.toJson(newData))
                 $http({
                     method: 'POST',
                     url: url+name,
@@ -66,7 +63,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
         postAction: function (name, id, action, newData) {
                 $log.debug("adding new data " + angular.toJson(newData) + " to " + name + '/' + id + '/' + action);
                 var deferredPromise = $q.defer();
-//                Restangular.all(name).post(angular.toJson(newData))
                 $http({
                     method: 'POST',
                     url: url+name+'/'+id+'/'+action,
@@ -85,7 +81,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
         put: function (name, newData) {
                 $log.debug("adding new data " + angular.toJson(newData) + " to " + name);
                 var deferredPromise = $q.defer();
-//                Restangular.all(name).put(angular.toJson(newData))
                 $http({
                     method: 'PUT',
                     url: url+name,
@@ -104,7 +99,6 @@ app.factory('RestService', ['$http', '$q', '$log', 'Restangular', function ($htt
         delete: function (name) {
                 $log.debug("getting list of " + name);
                 var deferredPromise = $q.defer();
-//                Restangular.all(name).delete()
                 $http({
                     method: 'DELETE',
                     url: url+name

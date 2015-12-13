@@ -1,5 +1,4 @@
 canvas {
-    border:1px solid #d3d3d3;
 }
 
 ul {
@@ -38,11 +37,20 @@ li {
 
 .btn-toolbar {
 /*    This is not ideal way of positioning toolbar */
-    margin-top: -50px;
-    margin-left: 20px;
+    float: right;
+    margin-right: 130px;
+    margin-top: -60px;
 }
 
 sidebar {
     height: 600px;
     overflow: scroll;
+}
+
+@media (max-width: 1170px) {
+    .btn-toolbar {
+        /*    This is not ideal way of positioning toolbar */
+        float: none;
+        margin-right: 0;
+    }
 }

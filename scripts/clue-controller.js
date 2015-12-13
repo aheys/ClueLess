@@ -49,6 +49,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.playerCount = 0;
         self.moveMade = false;
         self.suggestionMade = false;
+        self.secretPassageAvailable = false;
+        self.messageLog = "Message Log:\n";
     };
     
     self.startGame = function() {
@@ -127,7 +129,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
                     }
                 }
-                if (!self.game_board) {
+                if (!self.game_board || (self.gameStart && self.playerCount==0)) {
                     self.getGameBoard();
                 }
             },
@@ -272,12 +274,21 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 //if not then set new curPlayer
                 if (self.curPlayer == null || self.curPlayer.id != self.serverPlayers[i].id || self.playerCount==1) {
                     self.curPlayer = self.serverPlayers[i];
-                    console.log(self.curPlayer.board_piece.name + "'s Turn");
+                    self.messageLog+=self.curPlayer.board_piece.name + "'s Turn\n"
                     
                     if (self.curPlayer.id == id) {
+                        var location = self.curPlayer.location_id;
                         self.isMyTurn = true;
                         self.moveMade = false;
-                        self.ableToSuggest = self.checkIfAbleToSuggest(self.curPlayer.location_id);
+                        self.ableToSuggest = self.checkIfAbleToSuggest(location);
+                        if (location < 9) {
+                            if (self.game_board.rooms[location].secret_passage)
+                                self.secretPassageAvailable = true;
+                            else 
+                                self.secretPassageAvailable = false;
+                        }
+                        else 
+                            self.secretPassageAvailable = false;
                     }
                     else {
                         self.isMyTurn = false;
@@ -345,6 +356,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         }
          
         self.moveMade = true;
+        self.secretPassageAvailable = false;
 
         //Player cannot suggest again until moving
         self.suggestionMade = false;
@@ -352,8 +364,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         var locationId = ClientService.MapXYtoLocationId(self.curPlayer);
         self.curPlayer.location_id = locationId;
         self.ableToSuggest = self.checkIfAbleToSuggest(locationId);
-        console.log("AbleToSuggest is: " +self.ableToSuggest + " at " + locationId);
-//        console.log(self.curPlayer.board_piece.name + ' is moving ' + dire    ction + ' to ' + x + ',' + y + ' - ' + locationId + '!');
+//        console.log(self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + x + ',' + y + ' - ' + locationId + '!');
+        self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + locationId + '!\n';
         self.sendPlayerMove(locationId);
         
         

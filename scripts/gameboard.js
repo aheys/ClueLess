@@ -12,6 +12,7 @@ app.directive("gameboard", function() {
             
             var gameboard = new Image();
             gameboard.src = "assets/ClueBoard.PNG";
+//            gameboard.src = "assets/ClueLessBoard.png"
             
             var imageSrc = new Array();
             imageSrc[0] = "assets/gamepieces/pieceRed_border00.png";

@@ -44,7 +44,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.moveMade = false;
         self.suggestionMade = false;
         self.secretPassageAvailable = false;
-        self.messageLog = "Message Log:\n";
+        self.messageLog = "";
     };
     
     self.startGame = function() {

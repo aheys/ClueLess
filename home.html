@@ -61,7 +61,7 @@
                 </button>
             </div>
             <p ng-if="ctrl.playerCount<3" class="text-warning center-text">3 players are required to start, set to 1 for development</p>
-            <button type="button" class="btn btn-success btn-xl btn-start" ng-if="ctrl.host" ng-click="ctrl.startGame()"
+            <button type="button" class="btn btn-success btn-xl btn-start" style="margin-top: 60px;" ng-if="ctrl.host" ng-click="ctrl.startGame()"
                     ng-disabled="ctrl.playerCount<1">
                 Start Game
             </button>
@@ -137,7 +137,7 @@
                     <div class="panel-heading">My Cards</div>
                     <div class="panel-body" ng-if="ctrl.gameStart" style="max-height: 165px; overflow: scroll">
                         <div ng-repeat="card in ctrl.myCards" class="my-col-50">
-                            <image style="width: 100px; height: auto" ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png"></image>
+                            <image style="width: 100px; height: 150px; margin-bottom: 10px;" ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png"></image>
                         </div>
                     </div>
                 </div>

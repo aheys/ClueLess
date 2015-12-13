@@ -12,7 +12,7 @@ app.directive("gameboard", function() {
             var ctx = canvas.getContext('2d');
             
             var gameboard = new Image();
-            gameboard.src = "assets/ClueBoard.PNG";
+            gameboard.src = "assets/ClueBoard.png";
 //            gameboard.src = "assets/ClueLessBoard.png"
             
             var imageSrc = new Array();

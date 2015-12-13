@@ -38,10 +38,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.game_board = null;
         self.joinedAfterStart = false;
         self.host = false;
-        self.ableToSuggest = false;
         self.playerCount = 0;
         self.moveMade = false;
         self.suggestionMade = false;
+        self.ableToSuggest = false;
+        self.disputingSuggestion = false;
+        self.awaitingSuggestionResponse == false;
         self.secretPassageAvailable = false;
         self.messageLog = "";
     };
@@ -57,8 +59,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             function (response) {
                 self.game_boards = response.data;
                 if (self.game_boards) {
-                    if (self.game_boards.length == 0) {
-                        self.game_board = null;
+                    if (self.game_boards.length == 0 || (self.gameStart && self.playerCount == 0)) {
+                        self.reset();
                     }
                     else {
                         self.game_board = response.data[0];
@@ -267,6 +269,20 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     }
                 }
             }
+            if (self.game_board.awaiting_suggest_response) {
+                if (self.game_board.suggestion.player.id == id) {
+                    //do dispute    
+                    //this if statement prevents multiple modals from opening
+                    if (self.disputingSuggestion == false) {
+                        self.openDisputeModal(self.game_board.suggestion.cards);
+                        self.disputingSuggestion = true;
+                    }
+                }
+            }
+            if (self.awaitingSuggestionResponse == true && self.game_board.suggest_response) {
+                self.awaitingSuggestionResponse = false;
+                self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed your suggestion with " + self.game_board.suggest_response.card.item_name + "\n";
+            }
         }
     };
     
@@ -425,14 +441,15 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
         //return suggestion/accusation
         SuggestionModal.result.then(function (selection) {
+            self.disputingSuggestion = false;
             if (selection.type == "Suggestion") {
                 self.suggestionMade = true;
+                self.sendSelection(selection);
             }
             //Accusation
             else {
                 
             }
-            self.sendSelection(selection);
         }, function () {
             });
     };
@@ -456,6 +473,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 console.log(response);
+                if (route == "suggest") {
+                self.awaitingSuggestionResponse = true;
+                }
+                else { // route == "accuse" returns success
+                    //find out if accuse was successful
+                    //handle true/false
+                }
                 self.getGameBoard();
             },
             function (error) {
@@ -464,25 +488,50 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
     
     //Modal Window for disputing a suggestion, modal-controller.js holds logic
-    self.openDisputeModal = function (type) {
+    self.openDisputeModal = function (cards) {
         var DisputeModal = $uibModal.open({
             animation: true,
             templateUrl: 'scripts/dispute-modal.html',
             controller: 'DisputeModalCtrl',
             resolve: {
+                cards: function () {
+                    return cards;
+                }
             }
         });
 
         //return disputed suggestion
-        DisputeModal.result.then(function (selection) {
-            //do something with disputed cards
+        DisputeModal.result.then(function (card) {
+            self.sendDispute(card);
+            console.log("Sending Dispute with " + card.name);
         }, function () {
-            });
+            self.sendDispute(card);
+            console.log("Sending Dispute with " + card.name);
+            }
+        )
+    };
+    
+    self.sendDispute = function (card) {
+        var data = {
+            "card_id": card.name
+        };
+        
+        console.log(data);
+        self.promise = RestService.postAction('players', id, "answer_suggestion", data);
+        self.promise.then(
+            function (response) {
+                console.log(response);
+                self.getGameBoard();
+                self.disputingSuggestion = false;
+            },
+            function (error) {
+                alert("Error sending dispute!");
+            })
     };
     
     //Turned off for developing, calls getGameBoard every 2 seconds
     $interval((function () {
-        if (self.isMyTurn == false) {
+        if (self.isMyTurn == false && self.disputingSuggestion == false || self.awaitingSuggestionResponse == true) {
             self.getGameBoard();
         }
     }), 3000)

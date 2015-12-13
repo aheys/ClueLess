@@ -39,10 +39,7 @@ li {
 .btn-toolbar {
 /*    This is not ideal way of positioning toolbar */
     margin-top: -50px;
-/*
-    margin-bottom: 25px;
-    margin-left: 180px;
-*/
+    margin-left: 20px;
 }
 
 sidebar {

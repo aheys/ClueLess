@@ -355,7 +355,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         }
          
         self.moveMade = true;
-        self.secretPassageAvailable = false;
 
         //Player cannot suggest again until moving
         self.suggestionMade = false;
@@ -366,6 +365,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 //        console.log(self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + x + ',' + y + ' - ' + locationId + '!');
         self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + locationId + '!\n';
         self.sendPlayerMove(locationId);
+        
+        if (locationId < 9) {
+            if (self.game_board.rooms[locationId].secret_passage)
+                self.secretPassageAvailable = true;
+            else 
+                self.secretPassageAvailable = false;
+        }
         
         
     };

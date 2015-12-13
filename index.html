@@ -33,6 +33,7 @@
             <a class="navbar-brand" href="#">Debugging Header</a>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.createGameBoard()">Create Game</button>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getPlayers()">Update Players</button>
+            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.openDisputeModal()">Open Dispute Modal</button>
             <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.deleteGameBoard()">Delete Game</button>
             If game already started, delete & create a new one
         </div>
@@ -115,11 +116,11 @@
                                 ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">Secret Passage</button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-info" ng-click="ctrl.openModal('Suggestion')" 
+                        <button type="button" class="btn btn-info" ng-click="ctrl.openSuggestionModal('Suggestion')" 
                                 ng-disabled="!ctrl.isMyTurn || !ctrl.ableToSuggest || ctrl.suggestionMade">Suggestion</button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-danger" ng-click="ctrl.openModal('Accusation')" ng-disabled="!ctrl.isMyTurn">Accusation</button>
+                        <button type="button" class="btn btn-danger" ng-click="ctrl.openSuggestionModal('Accusation')" ng-disabled="!ctrl.isMyTurn">Accusation</button>
                     </div>
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn" ng-click="ctrl.endTurn()" ng-class="ctrl.moveMade ? 'btn-warning' : 'btn-default'"

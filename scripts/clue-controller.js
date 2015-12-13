@@ -420,11 +420,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
 
     //Modal Window for user suggestion/accusation, modal-controller.js holds logic
-    self.openModal = function (type) {
-        var modalInstance = $uibModal.open({
+    self.openSuggestionModal = function (type) {
+        var SuggestionModal = $uibModal.open({
             animation: true,
-            templateUrl: 'scripts/myModalContent.html',
-            controller: 'ModalInstanceCtrl',
+            templateUrl: 'scripts/suggestion-modal.html',
+            controller: 'SuggestionModalCtrl',
             resolve: {
                 type: function () {
                     return type;
@@ -437,12 +437,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 },
                 room: function () {
                     return self.cards.rooms[self.curPlayer.location_id];
-                },
+                }
             }
         });
 
         //return suggestion/accusation
-        modalInstance.result.then(function (selection) {
+        SuggestionModal.result.then(function (selection) {
             if (selection.type == "Suggestion") {
                 self.suggestionMade = true;
             }
@@ -478,6 +478,23 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             function (error) {
                 alert("Error sending selection!");
             })
+    };
+    
+    //Modal Window for disputing a suggestion, modal-controller.js holds logic
+    self.openDisputeModal = function (type) {
+        var DisputeModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'scripts/dispute-modal.html',
+            controller: 'DisputeModalCtrl',
+            resolve: {
+            }
+        });
+
+        //return disputed suggestion
+        DisputeModal.result.then(function (selection) {
+            //do something with disputed cards
+        }, function () {
+            });
     };
     
     //Turned off for developing, calls getPlayers every 2 seconds

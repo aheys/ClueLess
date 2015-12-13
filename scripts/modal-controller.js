@@ -59,3 +59,11 @@ app.controller('DisputeModalCtrl', function ($scope, $uibModalInstance) {
     $scope.selection = {};
     
 });
+
+app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance) {
+
+    $scope.exit = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+});

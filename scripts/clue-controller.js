@@ -479,13 +479,29 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         }, function () {
             });
     };
+
+    self.openGameResultsModal = function (type) {
+        var DisputeModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'scripts/game-results-modal.html',
+            controller: 'GameResultsModalCtrl',
+            resolve: {
+            }
+        });
+
+        //return disputed suggestion
+        DisputeModal.result.then(function (selection) {
+            //do something with disputed cards
+        }, function () {
+        });
+    };
     
     //Turned off for developing, calls getGameBoard every 2 seconds
     $interval((function () {
         if (self.isMyTurn == false) {
             self.getGameBoard();
         }
-    }), 3000)
+    }), 3000);
     
     
     self.initGame();

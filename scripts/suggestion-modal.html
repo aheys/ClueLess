@@ -1,12 +1,12 @@
 <div class="modal-header">
     <h3 class="modal-title">{{type}}</h3>
 </div>
-<div class="modal-body">
+<div class="modal-body" style="min-height: 250px;">
     <div class="btn-group" uib-dropdown>
         <button id="Suspect" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
             Suspect <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Suspect" style="max-height: 200px; overflow: scroll">
+        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Suspect" style="max-height: 215px; overflow: scroll">
             <li role="menuitem" ng-repeat="suspect in suspects">
                 <a href="" ng-click="addSuspect(suspect)">
                     <image ng-src="assets/PNG/Cards/suspect/{{suspect.name}}.png" />
@@ -19,7 +19,7 @@
         <button id="Weapon" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
             Weapon <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Weapon" style="max-height: 200px; overflow: scroll">
+        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Weapon" style="max-height: 215px; overflow: scroll">
             <li role="menuitem" ng-repeat="weapon in weapons">
                 <a href="" ng-click="addWeapon(weapon)">
                   <image ng-src="assets/PNG/Cards/weapon/{{weapon.name}}.png" />
@@ -28,11 +28,11 @@
         </ul>
     </div>
     
-    <div class="btn-group" style="min-height: 250px;" uib-dropdown>
+    <div class="btn-group"  uib-dropdown>
         <button id="Room" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
             Room <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room" style="max-height: 200px; overflow: scroll">
+        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room" style="max-height: 215px; overflow: scroll">
             <li role="menuitem">
                 <a href="" ng-click="addRoom(room)">
                     <image ng-src="assets/PNG/Cards/room/{{room.item_name}}.png" />
@@ -47,9 +47,9 @@
             <th class="col-lg-4">Room</th>
         </tr>
         <tr>
-            <td><image ng-src="assets/PNG/Cards/suspect/{{selection.suspect.item_name}}.png" /></td>
-            <td><image ng-src="assets/PNG/Cards/weapon/{{selection.weapon.name}}.png" /></td>
-            <image ng-src="assets/PNG/Cards/room/{{selection.room.item_name}}.png" />
+            <td class="col-lg-4"><image ng-src="assets/PNG/Cards/suspect/{{selection.suspect.item_name}}.png" /></td>
+            <td class="col-lg-4"><image ng-src="assets/PNG/Cards/weapon/{{selection.weapon.name}}.png" /></td>
+            <td class="col-lg-4"><image ng-src="assets/PNG/Cards/room/{{selection.room.item_name}}.png" /></td>
         </tr>
     </table>
 </div>

@@ -16,7 +16,11 @@
             Weapon <span class="caret"></span>
         </button>
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Weapon">
-            <li role="menuitem" ng-repeat="weapon in weapons"><a href="" ng-click="addWeapon(weapon)">{{weapon.item_name}}</a></li>
+            <li role="menuitem" ng-repeat="weapon in weapons">
+                <a href="" ng-click="addWeapon(weapon)">
+                  <image ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png" />
+                </a>
+            </li>
         </ul>
     </div>
     

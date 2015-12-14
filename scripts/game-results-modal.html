@@ -20,7 +20,18 @@
             <h4>Try again next time!</h4>
         </div>
         <div ng-show="solutionSet">
-            <p><!-- Place cards here -->{{solutionSet}}</p>
+            <table style="width: 100%;">
+                <tr>
+                    <th style="width: 33%; text-align: center">Weapon:</th>
+                    <th style="width: 33%; text-align: center">Suspect:</th>
+                    <th style="width: 33%; text-align: center">Room:</th>
+                </tr>
+                <tr>
+                    <td style="width: 33%; text-align: center"><image style="max-height:220px;" ng-src="assets/PNG/Cards/weapon/{{resultsInfo.weaponSolution.name}}.png" /></td>
+                    <td style="width: 33%; text-align: center"><image style="max-height:220px;" ng-src="assets/PNG/Cards/suspect/{{resultsInfo.suspectSolution.name}}.png" /></td>
+                    <td style="width: 33%; text-align: center"><image style="max-height:220px;" ng-src="assets/PNG/Cards/room/{{resultsInfo.locationSolution.name}}.png" /></td>
+                </tr>
+            </table>
         </div>
 
     </div>
@@ -37,6 +48,4 @@
     <div ng-hide="isAccusationType()">
         <button class="btn btn-info" type="button" ng-click="existLoser()">Continue</button>
     </div>
-
-
 </div>

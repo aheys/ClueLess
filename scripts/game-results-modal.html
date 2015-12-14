@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h3 class="modal-title">Game Results</h3>
+</div>
+<div class="modal-body">
+    <div class="modal-body">
+        <div ng-show="isAccusationType()">
+            <div ng-show="successfulAccusation()">
+                <h2>YOU ARE THE WINNER!</h2>
+
+                <h3>Congratulations!!!!</h3>
+            </div>
+            <div ng-hide="successfulAccusation()">
+                <h2>I'm Sorry!</h2>
+                <h4>You have made an incorrect accusation.</h4>
+            </div>
+        </div>
+        <div ng-hide="isAccusationType()">
+            <h2>I'm Sorry!</h2>
+            <h4>The game is over and you are not the winner.</h4>
+
+            <h3>Try again next time!</h3>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div ng-show="isAccusationType()">
+        <div ng-show="successfulAccusation()">
+            <button class="btn btn-info" type="button" ng-click="endGame()">End Game</button>
+        </div>
+        <div ng-hide="successfulAccusation()">
+            <button class="btn btn-info" type="button" ng-click="continue()">Continue</button>
+        </div>
+    </div>
+    <div ng-hide="isAccusationType()">
+        <button class="btn btn-info" type="button" ng-click="existLoser()">Continue</button>
+    </div>
+
+
+</div>

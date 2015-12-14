@@ -35,7 +35,7 @@
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room">
             <li role="menuitem">
                 <a href="" ng-click="addRoom(room)">
-                    <image ng-src="assets/PNG/Cards/room/{{room.name}}.png" />
+                    <image ng-src="assets/PNG/Cards/room/{{room.item_name}}.png" />
                  </a>
             </li>
         </ul>
@@ -48,13 +48,10 @@
         </tr>
         <tr>
             <td><image ng-src="assets/PNG/Cards/suspect/{{selection.suspect.item_name}}.png" /></td>
-            <td><image ng-src="assets/PNG/Cards/weapon/{{selection.weapon.item_name}}.png" /></td>
+            <td><image ng-src="assets/PNG/Cards/weapon/{{selection.weapon.name}}.png" /></td>
             <image ng-src="assets/PNG/Cards/room/{{selection.room.item_name}}.png" />
         </tr>
     </table>
-    <p>Suspect: {{selection.suspect.item_name}}</p>
-    <p>Weapon: {{selection.weapon.item_name}}</p>
-    <p>Room: {{selection.room.item_name}}</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="selection.suspect==null || selection.room==null || selection.weapon==null">OK</button>

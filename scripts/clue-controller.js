@@ -577,6 +577,15 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             controller: 'GameResultsModalCtrl',
             resolve: {
                 resultsInfo: function(){
+                    for (var sol in resultsInfo.solutionSet){
+                        if(self.solutionSet[sol].type == 'weapon'){
+                            resultsInfo.weaponSolution = resultsInfo.solutionSet[sol];
+                        }else if(self.solutionSet[sol].type == 'suspect'){
+                            resultsInfo.suspectSolution = resultsInfo.solutionSet[sol];
+                        }else{
+                            resultsInfo.locationSolution = resultsInfo.solutionSet[sol];
+                        }
+                    }
                     return resultsInfo;
                 }
             }

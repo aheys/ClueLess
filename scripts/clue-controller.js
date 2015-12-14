@@ -281,6 +281,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     self.curPlayer = self.serverPlayers[i];
                     self.messageLog+=self.curPlayer.board_piece.name + "'s Turn\n"
                     
+                    //reset booleans on turn change
+                    self.disputeLogged = false;
+                    self.disputingSuggestion = false;
+                    self.suggestionLogged = false;
+                    
                     if (self.curPlayer.id == id) {
                         var location = self.curPlayer.location_id;
                         self.isMyTurn = true;
@@ -302,6 +307,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }  
         }
         
+        //if the game_board is waiting for someone to response to a suggestion
         if (self.game_board.awaiting_suggest_response) {
             if (self.suggestionLogged == false && self.curPlayer.id != id){
                 
@@ -309,6 +315,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.suggestionLogged = true;
             }
 
+            //if I'm the one that has to respond to the suggestion
             if (self.game_board.suggestion.player.id == id) {
                 //do dispute 
                 //this if statement prevents multiple modals from opening
@@ -321,6 +328,15 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }
 
         }
+        //if there was no suggestion response, but there was a suggestion
+        else if (self.game_board.awaiting_suggest_response == false && self.game_board.suggestion) {
+            if (self.suggestionLogged == false && self.curPlayer.id != id) {
+                self.messageLog += self.curPlayer.board_piece.name + " made the suggestion: " + self.game_board.suggestion.cards[0].item_name + ", " + self.game_board.suggestion.cards[1].item_name + ", " + self.game_board.suggestion.cards[2].item_name + ".\n";
+                self.messageLog += "Nobody could dispute this suggestion.\n";
+                self.suggestionLogged = true;
+            }
+        }
+        
         //handle dispute response
         if (self.game_board.suggest_response) {
             self.suggestionLogged = false;
@@ -328,18 +344,24 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             //if it was me that made the suggestion
             if (self.awaitingSuggestionResponse == true) {
                 self.awaitingSuggestionResponse = false;
-                self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed your suggestion with " + self.game_board.suggest_response.card.item_name + "\n";
+                self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed your suggestion with " + self.game_board.suggest_response.card.item_name + ".\n";
                 self.disputeLogged = true;
                 self.myDetectiveNotebook.push(self.game_board.suggest_response.card);
             }
 
+            //if it wasn't me that made the suggestion, and I haven't logged it yet
             if (self.disputeLogged == false && self.curPlayer.id != id) {
                 self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed the suggestion!\n";
                 self.disputeLogged = true;
             }
         }
         else {
-            self.disputeLogged = false;
+            //If the was no suggestion reponse and I was expecting one... 
+            if (self.game_board.awaiting_suggest_response == false && self.awaitingSuggestionResponse == true) {
+                self.messageLog += "Nobody could dispute your suggestion.\n";
+                self.awaitingSuggestionResponse = false;
+            }
+            
         }
     };
     
@@ -647,6 +669,14 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }
         )
     };
+    
+    self.instructions = function () {
+        var InstructionsModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'scripts/instructions-modal.html',
+            controller: 'InstructionsCtrl'
+        });
+    }
 
     //Turned off for developing, calls getGameBoard every 2 seconds
     $interval((function () {

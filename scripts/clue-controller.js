@@ -43,9 +43,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.suggestionMade = false;
         self.ableToSuggest = false;
         self.disputingSuggestion = false;
-        self.awaitingSuggestionResponse == false;
+        self.awaitingSuggestionResponse = false;
         self.secretPassageAvailable = false;
         self.messageLog = "";
+        self.myDetectiveNotebook = [];
     };
     
     self.startGame = function() {
@@ -282,6 +283,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             if (self.awaitingSuggestionResponse == true && self.game_board.suggest_response) {
                 self.awaitingSuggestionResponse = false;
                 self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed your suggestion with " + self.game_board.suggest_response.card.item_name + "\n";
+                self.myDetectiveNotebook.push(self.game_board.suggest_response.card);
             }
         }
     };

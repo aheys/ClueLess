@@ -43,7 +43,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.suggestionMade = false;
         self.ableToSuggest = false;
         self.disputingSuggestion = false;
-        self.awaitingSuggestionResponse == false;
+        self.awaitingSuggestionResponse = false;
         self.secretPassageAvailable = false;
         self.messageLog = "";
         self.playerIsWinner = false;
@@ -89,7 +89,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
                             self.openGameResultsModal({});
                         }
-                        
+
                         self.gameStart = self.game_board.game_in_play;
                         
                         if (!self.cards)
@@ -291,6 +291,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             if (self.awaitingSuggestionResponse == true && self.game_board.suggest_response) {
                 self.awaitingSuggestionResponse = false;
                 self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed your suggestion with " + self.game_board.suggest_response.card.item_name + "\n";
+                self.myDetectiveNotebook.push(self.game_board.suggest_response.card);
             }
         }
     };
@@ -569,7 +570,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }
         )
     };
-    
+
     //Turned off for developing, calls getGameBoard every 2 seconds
     $interval((function () {
         if (self.isMyTurn == false && self.disputingSuggestion == false || self.awaitingSuggestionResponse == true) {

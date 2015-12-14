@@ -115,6 +115,16 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Detective Notes:</div>
+                    <div class="panel-body" ng-if="ctrl.gameStart" style="max-height: 190px; overflow-y: auto">
+                        <div ng-repeat="card in ctrl.myDetectiveNotebook" class="my-col-50">
+                            <image style="width: 100px; height: 150px; margin-bottom: 10px;" ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png"></image>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             <div>

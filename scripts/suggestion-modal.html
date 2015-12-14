@@ -34,7 +34,7 @@
                 Room <span class="caret"></span>
             </button>
             <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room" style="max-height: 215px; overflow: scroll">
-                <li role="menuitem">
+                <li role="menuitem" ng-repeat="room in rooms">
                     <a href="" ng-click="addRoom(room)">
                         <image ng-src="assets/PNG/Cards/room/{{room.name}}.png" />
                      </a>

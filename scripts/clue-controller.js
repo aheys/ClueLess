@@ -462,8 +462,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 weapons: function () {
                     return self.cards.weapons;
                 },
-                room: function () {
-                    return self.cards.rooms[self.curPlayer.location_id];
+                rooms: function () {
+                    return self.cards.rooms;
+                },
+                location: function () {
+                    return self.curPlayer.location_id;
                 }
             }
         });

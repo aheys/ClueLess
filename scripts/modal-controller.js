@@ -1,4 +1,4 @@
-app.controller('SuggestionModalCtrl', function ($scope, $log, $uibModalInstance, type, suspects, weapons, room) {
+app.controller('SuggestionModalCtrl', function ($scope, $log, $uibModalInstance, type, suspects, weapons, rooms, location) {
 
     $scope.type = type;
 
@@ -9,10 +9,16 @@ app.controller('SuggestionModalCtrl', function ($scope, $log, $uibModalInstance,
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-    $log.debug(room);
+
     $scope.weapons = weapons;
     $scope.suspects = suspects;
-    $scope.room = room;
+    
+    $scope.rooms = [];
+    if (type == "Suggestion")
+        $scope.rooms.push(rooms[location]);
+    else 
+        $scope.rooms=rooms;
+                      
     
     $scope.selection = {};
     $scope.selection.type = type;

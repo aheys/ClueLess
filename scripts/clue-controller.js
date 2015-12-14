@@ -483,7 +483,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         var location = self.game_board.board.rooms[self.curPlayer.location_id].secret_passage;
         self.sendPlayerMove(location);
         self.messageLog+= self.curPlayer.board_piece.name + ' is taking secret passage to ' + self.game_board.board.rooms[location].name + '!\n';
-        self.moveMade = true;  
+        self.moveMade = true; 
+        self.suggestionMade = false;
         
         //update client position
         var obj = ClientService.MapLocationIdToXY(location);
@@ -538,6 +539,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             self.disputingSuggestion = false;
             if (selection.type == "Suggestion") {
                 self.suggestionMade = true;
+                self.moveMade = true;
                 self.sendSelection(selection);
             }
             //Accusation

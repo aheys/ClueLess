@@ -77,27 +77,34 @@
             <div class="row">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Player Info
+                        <b> Player Info </b>
                     </div>
                     <div class="panel-body">
-                        <h4>
-                            My Player:
-                            <image style="max-height:220px;" ng-src="assets/PNG/Cards/room/{{ctrl.myPlayer}}.png" />
-                        </h4>
-                        <h4>Players:</h4>
-                        <h4>{{ctrl.curPlayer.board_piece.name}}'s Turn</h4>
-                        <ul>
-                            <li class="legend" ng-repeat="player in ctrl.serverPlayers">
-                                <div class="color-box" style="background:{{ctrl.playersColors[$index]}}"></div>
-                                {{player.board_piece.name}}
-                            </li>
-                        </ul>
+                        <table style="width: 100%;">
+                            <tr>
+                                <th style="width: 33%; text-align: center">My Player:</th>
+                                <th style="width: 33%; text-align: center">Players:</th>
+                                <th style="width: 33%; text-align: center">Current turn:</th>
+                            </tr>
+                            <tr>
+                                <td style="width: 33%; text-align: center"><image style="max-height:220px;" ng-src="assets/PNG/Cards/suspect/{{ctrl.myPlayer}}.png" /></td>
+                                <td style="width: 33%; text-align: center">
+                                    <li class="legend" ng-repeat="player in ctrl.serverPlayers">
+                                    <div class="color-box" style="background:{{ctrl.playersColors[$index]}}"></div>
+                                    {{player.board_piece.name}}
+                                    </li>
+                                </td>
+                                <td style="width: 33%; text-align: center">
+                                    <image style="max-height:220px;" ng-src="assets/PNG/Cards/suspect/{{ctrl.curPlayer.board_piece.name}}.png" />
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="panel panel-default">
-                    <div class="panel-heading">My Cards</div>
+                    <div class="panel-heading"><b>My Cards</b></div>
                     <div class="panel-body" ng-if="ctrl.gameStart" style="max-height: 190px; overflow-y: auto">
                         <div ng-repeat="card in ctrl.myCards" class="my-col-50">
                             <image style="width: 100px; height: 150px; margin-bottom: 10px;" ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png"></image>
@@ -107,7 +114,7 @@
             </div>
             <div class="row">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Activity Log</div>
+                    <div class="panel-heading"><b>Activity Log</b></div>
                     <div class="panel-body" ng-if="ctrl.gameStart">
                         <pre id="msg-log" style="max-height: 220px; min-height: 220px;">{{ctrl.messageLog}}</pre>
                     </div>

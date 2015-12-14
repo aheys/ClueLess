@@ -1,17 +1,15 @@
 <div class="modal-header">
     <h3 class="modal-title">Dispute Suggestion with:</h3>
 </div>
-<div class="modal-body">
-    <div class="modal-body">
-        <ul>
-            <li ng-repeat="card in cards">
-                <a href="" ng-click="$event.preventDefault(); select(card)">{{ card.item_name }}</a>
-            </li>
-        </ul>
-        Selected: <b>{{ selected.item_name }}</b>
-    </div>
+<div class="modal-body" style="min-height: 250px;">
+    <table class="col-lg-12">
+        <tr>
+            <td class="col-lg-4" ng-repeat="card in cards"><image ng-click="select(card)" ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png" /></td>
+        </tr>
+    </table>
 </div>
 <div class="modal-footer">
+    <span style="float: left">Selected: <b>{{ selected.item_name }}</b></span>
     <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
     <button class="btn btn-warning" type="button" ng-click="" ng-disabled="true">Cancel</button>
 </div>

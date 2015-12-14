@@ -1,4 +1,4 @@
-app.controller('SuggestionModalCtrl', function ($scope, $uibModalInstance, type, suspects, weapons, room) {
+app.controller('SuggestionModalCtrl', function ($scope, $log, $uibModalInstance, type, suspects, weapons, room) {
 
     $scope.type = type;
 
@@ -9,7 +9,7 @@ app.controller('SuggestionModalCtrl', function ($scope, $uibModalInstance, type,
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-    console.log(room);
+    $log.debug(room);
     $scope.weapons = weapons;
     $scope.suspects = suspects;
     $scope.room = room;
@@ -37,7 +37,7 @@ app.controller('SuggestionModalCtrl', function ($scope, $uibModalInstance, type,
 
 //Dispute Modal Controller
 //passes in an array of cards that the user can dispute a suggestion made with
-app.controller('DisputeModalCtrl', function ($scope, $uibModalInstance, cards) {
+app.controller('DisputeModalCtrl', function ($scope, $log, $uibModalInstance, cards) {
 
     $scope.cards = cards;
 
@@ -45,23 +45,22 @@ app.controller('DisputeModalCtrl', function ($scope, $uibModalInstance, cards) {
     
     $scope.select = function (card) {
         $scope.selected = card;
-    }
-
+    };
 
     $scope.ok = function () {
-        console.log("OKing with " + $scope.selected.name);
+        $log.debug("OKing with " + $scope.selected.name);
         $uibModalInstance.close($scope.selected);
     };
 
 });
 
-app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance, resultsInfo) {
+app.controller('GameResultsModalCtrl', function ($scope, $log, $uibModalInstance, resultsInfo) {
 
     $scope.resultsInfo = resultsInfo;
 
     $scope.solutionSet = $scope.resultsInfo.solutionSet;
 
-    console.log($scope.resultsInfo);
+    $log.debug($scope.resultsInfo);
 
     // Whenever the type is not accusation, this was launched because the game ended. This means the modal
     // is launched for a losing player.
@@ -70,7 +69,7 @@ app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance, resu
     };
 
     $scope.successfulAccusation = function(){
-        console.log( $scope.isAccusationType && $scope.resultsInfo.success);
+        $log.debug( $scope.isAccusationType && $scope.resultsInfo.success);
         return $scope.isAccusationType && $scope.resultsInfo.success;
     };
 

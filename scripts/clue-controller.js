@@ -45,6 +45,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.disputingSuggestion = false;
         self.awaitingSuggestionResponse = false;
         self.secretPassageAvailable = false;
+        self.myDetectiveNotebook = [];
         self.messageLog = "";
         self.playerIsWinner = false;
         self.solutionSet = null;
@@ -215,7 +216,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 self.solutionSet = response.data;
-                console.log(self.solutionSet);
+                $log.debug(self.solutionSet);
             },
             function (error) {
                 alert('Error getting cards');
@@ -557,6 +558,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 $log.debug(response);
+                self.messageLog += "You disputed with " + card.item_name + ".\n";
                 self.getGameBoard();
                 self.disputingSuggestion = false;
             },

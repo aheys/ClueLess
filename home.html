@@ -176,7 +176,8 @@
 <script type="application/javascript">
     window.setInterval(function() {
         var elem = document.getElementById('msg-log');
-        elem.scrollTop = elem.scrollHeight;
+        if (elem) 
+            elem.scrollTop = elem.scrollHeight;
     }, 1000);
 </script>
 </body>

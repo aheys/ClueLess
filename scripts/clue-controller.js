@@ -50,6 +50,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.myDetectiveNotebook = [];
         self.messageLog = "";
         self.playerIsWinner = false;
+        self.playerIsLoser = false;
         self.solutionSet = null;
     };
     
@@ -587,6 +588,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     } else {
                         $log.debug("Bad accusation. success response: " + response.data['success']);
                         self.openGameResultsModal({type: 'accusation', success: false});
+                        self.playerIsLoser = true;
                     }
                 }
                 self.getGameBoard();

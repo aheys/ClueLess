@@ -46,6 +46,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.awaitingSuggestionResponse = false;
         self.suggestionLogged = false;
         self.disputeLogged = false;
+        self.accusationLogged = false;
         self.secretPassageAvailable = false;
         self.myDetectiveNotebook = [];
         self.messageLog = "";
@@ -270,6 +271,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
     //confusing language here, curPlayer is the most recent player_in_turn from getGameBoard() call
     self.updatePlayers = function () {
+        var newTurn = false;
+        
         for (var i=0; i<self.playerCount; i++) {
             var obj = ClientService.MapLocationIdToXY(self.serverPlayers[i].location_id);
             self.serverPlayers[i].x = obj.x;
@@ -280,12 +283,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 //if not then set new curPlayer
                 if (self.curPlayer == null || self.curPlayer.id != self.serverPlayers[i].id || self.playerCount==1) {
                     self.curPlayer = self.serverPlayers[i];
-                    self.messageLog+=self.curPlayer.board_piece.name + "'s Turn\n"
                     
                     //reset booleans on turn change
+                    newTurn = true;
                     self.disputeLogged = false;
                     self.disputingSuggestion = false;
                     self.suggestionLogged = false;
+                    self.accusationLogged = false;
                     
                     if (self.curPlayer.id == id) {
                         var location = self.curPlayer.location_id;
@@ -307,6 +311,17 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 }
             }  
         }
+        
+        //someone made an accusation
+        if (self.game_board.accusation) {
+            if (self.game_board.accusation.from.id != id && self.accusationLogged == false) {
+                self.messageLog += self.game_board.accusation.from.board_piece.name + " made the incorrect accusation: " + self.game_board.accusation.cards[0].item_name + ", " + self.game_board.accusation.cards[1].item_name + ", " + self.game_board.accusation.cards[2].item_name + " and has lost.\n";
+                self.accusationLogged = true;
+            }
+        }
+        
+        if (newTurn)
+            self.messageLog+=self.curPlayer.board_piece.name + "'s Turn\n";
         
         //if the game_board is waiting for someone to response to a suggestion
         if (self.game_board.awaiting_suggest_response) {
@@ -356,14 +371,13 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.disputeLogged = true;
             }
         }
-        else {
-            //If the was no suggestion reponse and I was expecting one... 
-            if (self.game_board.awaiting_suggest_response == false && self.awaitingSuggestionResponse == true) {
-                self.messageLog += "Nobody could dispute your suggestion.\n";
-                self.awaitingSuggestionResponse = false;
-            }
-            
+        
+        //If the was no suggestion reponse and I was expecting one...
+        else if (self.game_board.awaiting_suggest_response == false && self.awaitingSuggestionResponse == true) {
+            self.messageLog += "Nobody could dispute your suggestion.\n";
+            self.awaitingSuggestionResponse = false;
         }
+        
     };
     
     
@@ -542,10 +556,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.suggestionMade = true;
                 self.moveMade = true;
                 self.sendSelection(selection);
+                self.messageLog += "You've made the suggestion: " + selection.suspect.item_name + " with the " + selection.weapon.item_name + " in the " + selection.room.item_name + "\n";
             }
             //Accusation
             else {
                 self.sendSelection(selection);
+                self.messageLog += "You've made the accusation: " + selection.suspect.item_name + " with the " + selection.weapon.item_name + " in the " + selection.room.item_name + "\n";
             }
         }, function () {
             });
@@ -576,7 +592,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         //if player playing by themself, don't bother
                         self.awaitingSuggestionResponse = false;
                     }
-                    self.messageLog += "You've made the suggestion: " + selection.suspect.item_name + " with the " + selection.weapon.item_name + " in the " + selection.room.item_name + "\n";
                 }
                 else { // route == "accuse" returns success
                     //find out if accuse was successful
@@ -585,11 +600,14 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         $log.debug("Good accusation. success response: " + response.data['success']);
                         self.playerIsWinner = true;
                         self.openGameResultsModal({type: 'accusation', success: true, solutionSet: self.solutionSet});
+                        self.messageLog += "You've made a successful accusation. Congratulations!\n";
                     } else {
                         $log.debug("Bad accusation. success response: " + response.data['success']);
                         self.openGameResultsModal({type: 'accusation', success: false});
                         self.playerIsLoser = true;
+                        self.messageLog += "You've made an incorrect accusation. You have lost the game. Please remain in the game to dispute other players' cards.\n";
                     }
+                    
                 }
                 self.getGameBoard();
             },

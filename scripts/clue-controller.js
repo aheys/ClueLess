@@ -83,12 +83,16 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                             self.getCardsByPlayerId();
                         }
 
+                        if(!self.solutionSet) {
+                            self.getSolutionSet();
+                        }
+
                         // Signals game over for player since game was in play and no isn't
                         if (self.gameStart == true
                             && self.game_board.game_in_play == false
                             && !self.playerIsWinner) {
 
-                            self.openGameResultsModal({});
+                            self.openGameResultsModal({solutionSet: self.solutionSet});
                         }
 
                         self.gameStart = self.game_board.game_in_play;
@@ -103,10 +107,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                             else { //gameStart == true, main update loop
                                 self.updatePlayers();
                             }
-                        }
-
-                        if(!self.solutionSet) {
-                            self.getSolutionSet();
                         }
 
                     }

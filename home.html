@@ -1,151 +1,159 @@
 <!DOCTYPE html>
 <html ng-app="clueApp">
-    <head>
-        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="stylesheet.css">
-        <link rel="stylesheet" href="bower_components/angular-busy/dist/angular-busy.css">
-        
-        
-        <script src="bower_components/angular/angular.js"></script>
-<!--        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>-->
-        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-        
-        <script src="bower_components/angular-animate/angular-animate.js"></script>
-        <script src="bower_components/angular-busy/dist/angular-busy.js"></script>
-        
-        <!-- Source Scripts -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/gameboard.js"></script>
-        <script src="scripts/client-services.js"></script>
-        <script src="scripts/rest-services.js"></script>
-        <script src="scripts/clue-controller.js"></script>
-        <script src="scripts/modal-controller.js"></script>
-    </head>
+<head>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="bower_components/angular-busy/dist/angular-busy.css">
+
+
+    <script src="bower_components/angular/angular.js"></script>
+    <!--        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>-->
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-busy/dist/angular-busy.js"></script>
+
+    <!-- Source Scripts -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/gameboard.js"></script>
+    <script src="scripts/client-services.js"></script>
+    <script src="scripts/rest-services.js"></script>
+    <script src="scripts/clue-controller.js"></script>
+    <script src="scripts/modal-controller.js"></script>
+</head>
 <body ng-controller="clueCtrl as ctrl" cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
                    backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
-    <!-- Debugging Toolbar -->
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <a class="navbar-brand" href="#">Debugging Header</a>
-            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.createGameBoard()">Create Game</button>
-            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getGameBoard()">Update Game</button>
-            <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.deleteGameBoard()">Delete Game</button>
-            If game already started, delete & create a new one
-        </div>
-    </nav>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <h1 class="text-center">ClueLess</h1>
-            <h4 class="text-center">Game State: 
-                <span ng-if="ctrl.game_board && !ctrl.gameStart" style="color:blue">Created</span>
-                <span ng-if="ctrl.gameStart && !ctrl.joinedAfterStart" style="color:green">Started</span>
-                <span ng-if="ctrl.gameStart && ctrl.joinedAfterStart" style="color:red">Already Started</span>
-                <span ng-if="!ctrl.game_board" style="color:red">No Current Games, Create One!</span>
-            </h4>
-            <h4 class="text-center">{{ctrl.playerCount}}/6 players</h4>
-            <button type="button" class="btn btn-success btn-xl btn-start" ng-if="!ctrl.game_board" ng-click="ctrl.createGameBoard()">New Game</button>
-        </div>
+
+<!-- Debugging Toolbar -->
+<nav class="navbar navbar-default">
+    <div class="container">
+        <a class="navbar-brand" href="#">Debugging Header</a>
+        <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.createGameBoard()">Create Game</button>
+        <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.getGameBoard()">Update Game</button>
+        <button type="button" class="btn btn-default navbar-btn" ng-click="ctrl.deleteGameBoard()">Delete Game</button>
+        If game already started, delete & create a new one
     </div>
-    
-    <!-- Pre-Game Setup -->
-    <div class="row" ng-if="!ctrl.gameStart && ctrl.game_board">        
-        <div class="col-md-8 col-md-offset-2">
-            <div class="text-center">
-                <h4 ng-if="ctrl.myPlayer==null">Select your character:</h4>
-                <h4 ng-if="ctrl.myPlayer">Waiting on other players...</h4>
-                <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" ng-repeat="suspect in ctrl.cards.suspects"
-                            ng-click="ctrl.pieceSelected(suspect)" ng-disabled="suspect.isTaken || ctrl.myPlayerAdded">
-                        {{suspect.name}}
-                    </button>
-                </div>
-                <p ng-if="ctrl.playerCount<3" class="text-warning center-text">3 players are required to start, set to 1 for development</p>
-                <button type="button" class="btn btn-success btn-xl btn-start" ng-if="ctrl.host" ng-click="ctrl.startGame()" 
-                        ng-disabled="ctrl.playerCount<1">
-                    Start Game
+</nav>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h1 class="text-center">ClueLess</h1>
+        <h4 class="text-center">Game State:
+            <span ng-if="ctrl.game_board && !ctrl.gameStart" style="color:blue">Created</span>
+            <span ng-if="ctrl.gameStart && !ctrl.joinedAfterStart" style="color:green">Started</span>
+            <span ng-if="ctrl.gameStart && ctrl.joinedAfterStart" style="color:red">Already Started</span>
+            <span ng-if="!ctrl.game_board" style="color:red">No Current Games, Create One!</span>
+        </h4>
+        <h4 class="text-center">{{ctrl.playerCount}}/6 players</h4>
+        <button type="button" class="btn btn-success btn-xl btn-start" ng-if="!ctrl.game_board" ng-click="ctrl.createGameBoard()">New Game</button>
+    </div>
+</div>
+
+<!-- Pre-Game Setup -->
+<div class="row" ng-if="!ctrl.gameStart && ctrl.game_board">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="text-center">
+            <h4 ng-if="ctrl.myPlayer==null">Select your character:</h4>
+            <h4 ng-if="ctrl.myPlayer">Waiting on other players...</h4>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" ng-repeat="suspect in ctrl.cards.suspects"
+                        ng-click="ctrl.pieceSelected(suspect)" ng-disabled="suspect.isTaken || ctrl.myPlayerAdded">
+                    {{suspect.name}}
                 </button>
             </div>
+            <p ng-if="ctrl.playerCount<3" class="text-warning center-text">3 players are required to start, set to 1 for development</p>
+            <button type="button" class="btn btn-success btn-xl btn-start" style="margin-top: 60px;" ng-if="ctrl.host" ng-click="ctrl.startGame()"
+                    ng-disabled="ctrl.playerCount<1">
+                Start Game
+            </button>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <!-- Play Clue -->
-        <div class="row" ng-if="ctrl.gameStart && !ctrl.joinedAfterStart">
-            <div class="col-md-8">
-                <div>
-                    <canvas gameboard id="myCanvas" width="800" height="600" players="ctrl.serverPlayers" game-pieces="ctrl.cards.suspects">
-                        Your browser does not support the HTML5 canvas tag.
-                    </canvas>
-                    <div class="btn-toolbar" role="toolbar" aria-label="..." ng-if="!ctrl.awaitingSuggestionResponse">
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('left')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
-                                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-                            </button>
-                            <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('right')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
-                                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-                            </button>
-                            <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('up')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
-                                <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                            </button>
-                            <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('down')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
-                                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="..." ng-if="ctrl.secretPassageAvailable">
-                            <button type="button" class="btn btn-info" ng-click="ctrl.takeSecretPassage()"
-                                    ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">Secret Passage</button>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-info" ng-click="ctrl.openSuggestionModal('Suggestion')"
-                                    ng-disabled="!ctrl.isMyTurn || !ctrl.ableToSuggest || ctrl.suggestionMade">Suggestion</button>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-danger" ng-click="ctrl.openSuggestionModal('Accusation')" ng-disabled="!ctrl.isMyTurn">Accusation</button>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button type="button" class="btn" ng-click="ctrl.endTurn()" ng-class="ctrl.moveMade ? 'btn-warning' : 'btn-default'"
-                                    ng-disabled="!ctrl.isMyTurn">End Turn</button>
+<div class="container">
+    <!-- Play Clue -->
+    <div class="row" ng-if="ctrl.gameStart && !ctrl.joinedAfterStart">
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Player Info
+                    </div>
+                    <div class="panel-body">
+                        <h4>
+                            My Player:
+                            <small>{{ctrl.myPlayer}}</small>
+                        </h4>
+                        <h4>Players:</h4>
+                        <h4>{{ctrl.curPlayer.board_piece.name}}'s Turn</h4>
+                        <ul>
+                            <li class="legend" ng-repeat="player in ctrl.serverPlayers">
+                                <div class="color-box" style="background:{{ctrl.playersColors[$index]}}"></div>
+                                {{player.board_piece.name}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">My Cards</div>
+                    <div class="panel-body" ng-if="ctrl.gameStart" style="max-height: 190px; overflow-y: auto">
+                        <div ng-repeat="card in ctrl.myCards" class="my-col-50">
+                            <image style="width: 100px; height: 150px; margin-bottom: 10px;" ng-src="assets/PNG/Cards/{{card.type}}/{{card.name}}.png"></image>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Player Info
-                        </div>
-                        <div class="panel-body">
-                            <h4>
-                                My Player:
-                                <small>{{ctrl.myPlayer}}</small>
-                            </h4>
-                            <h4>My Cards:</h4>
-                            <ul>
-                                <li ng-repeat="card in ctrl.myCards">{{card.type[0].toUpperCase() + card.type.slice(1, card.type.length)}}: {{card.item_name}}</li>
-                            </ul>
-                            <h4>Players:</h4>
-                            <h4>{{ctrl.curPlayer.board_piece.name}}'s Turn</h4>
-                            <ul>
-                                <li class="legend" ng-repeat="player in ctrl.serverPlayers">
-                                    <div class="color-box" style="background:{{ctrl.playersColors[$index]}}"></div>
-                                    {{player.board_piece.name}}
-                                </li>
-                            </ul>
-                        </div>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Activity Log</div>
+                    <div class="panel-body" ng-if="ctrl.gameStart">
+                        <pre id="msg-log" style="max-height: 220px; min-height: 220px;">{{ctrl.messageLog}}</pre>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Activity Log</div>
-                        <div class="panel-body" ng-if="ctrl.gameStart">
-                            <pre id="msg-log" style="max-height: 220px; min-height: 220px;">{{ctrl.messageLog}}</pre>
-                        </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div>
+                <canvas gameboard id="myCanvas" width="800" height="600" players="ctrl.serverPlayers" game-pieces="ctrl.cards.suspects">
+                    Your browser does not support the HTML5 canvas tag.
+                </canvas>
+                <div class="btn-toolbar" role="toolbar" aria-label="..." ng-if="!ctrl.awaitingSuggestionResponse">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('left')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
+                            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('right')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
+                            <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('up')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
+                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('down')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
+                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="..." ng-if="ctrl.secretPassageAvailable">
+                        <button type="button" class="btn btn-info" ng-click="ctrl.takeSecretPassage()"
+                                ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">Secret Passage</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-info" ng-click="ctrl.openSuggestionModal('Suggestion')"
+                                ng-disabled="!ctrl.isMyTurn || !ctrl.ableToSuggest || ctrl.suggestionMade">Suggestion</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-danger" ng-click="ctrl.openSuggestionModal('Accusation')" ng-disabled="!ctrl.isMyTurn">Accusation</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn" ng-click="ctrl.endTurn()" ng-class="ctrl.moveMade ? 'btn-warning' : 'btn-default'"
+                                ng-disabled="!ctrl.isMyTurn">End Turn</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 <script type="application/javascript">
     window.setInterval(function() {

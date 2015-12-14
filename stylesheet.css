@@ -1,4 +1,7 @@
 canvas {
+    margin-left: -100px;
+    position: relative;
+    z-index: -1;
 }
 
 ul {
@@ -12,6 +15,13 @@ li {
 .legend { 
 /*    display:inline-block;*/
     margin-bottom:5px;  
+}
+
+
+.my-col-50{
+    float: left;
+    margin-left: 10px;
+    width: 18%;
 }
 
 .color-box {
@@ -36,9 +46,7 @@ li {
 }
 
 .btn-toolbar {
-/*    This is not ideal way of positioning toolbar */
-    float: right;
-    margin-right: 130px;
+    margin-left: 80px;
     margin-top: -60px;
 }
 

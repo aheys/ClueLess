@@ -40,6 +40,18 @@
             </li>
         </ul>
     </div>
+    <table>
+        <tr>
+            <th>Suspect</th>
+            <th>Weapon</th>
+            <th>Room</th>
+        </tr>
+        <tr>
+            <td><image ng-src="assets/PNG/Cards/suspect/{{selection.suspect.item_name}}.png" /></td>
+            <td><image ng-src="assets/PNG/Cards/weapon/{{selection.weapon.item_name}}.png" /></td>
+            <image ng-src="assets/PNG/Cards/room/{{selection.room.item_name}}.png" />
+        </tr>
+    </table>
     <p>Suspect: {{selection.suspect.item_name}}</p>
     <p>Weapon: {{selection.weapon.item_name}}</p>
     <p>Room: {{selection.room.item_name}}</p>

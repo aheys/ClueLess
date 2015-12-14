@@ -16,10 +16,13 @@
         </div>
         <div ng-hide="isAccusationType()">
             <h2>I'm Sorry!</h2>
-            <h4>The game is over and you are not the winner.</h4>
-
-            <h3>Try again next time!</h3>
+            <h3>The game is over and you are not the winner.</h3>
+            <h4>Try again next time!</h4>
         </div>
+        <div ng-show="solutionSet">
+            <p><!-- Place cards here -->{{solutionSet}}</p>
+        </div>
+
     </div>
 </div>
 <div class="modal-footer">

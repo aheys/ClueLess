@@ -47,6 +47,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.secretPassageAvailable = false;
         self.messageLog = "";
         self.playerIsWinner = false;
+        self.solutionSet = null;
     };
     
     self.startGame = function() {
@@ -102,6 +103,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                             else { //gameStart == true, main update loop
                                 self.updatePlayers();
                             }
+                        }
+
+                        if(!self.solutionSet) {
+                            self.getSolutionSet();
                         }
 
                     }
@@ -201,6 +206,19 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             },
             function (error) {
                 alert("Error making move to " + location);
+            }
+        )
+    };
+
+    self.getSolutionSet = function () {
+        self.promise = RestService.get('game_boards/solution_set');
+        self.promise.then(
+            function (response) {
+                self.solutionSet = response.data;
+                console.log(self.solutionSet);
+            },
+            function (error) {
+                alert('Error getting cards');
             }
         )
     };
@@ -492,7 +510,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     if(response.data['success'] == true) {
                         console.log("Good accusation. success response: " + response.data['success']);
                         self.playerIsWinner = true;
-                        self.openGameResultsModal({type: 'accusation', success: true});
+                        self.openGameResultsModal({type: 'accusation', success: true, solutionSet: self.solutionSet});
                     } else {
                         console.log("Bad accusation. success response: " + response.data['success']);
                         self.openGameResultsModal({type: 'accusation', success: false});

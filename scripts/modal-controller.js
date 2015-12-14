@@ -59,6 +59,8 @@ app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance, resu
 
     $scope.resultsInfo = resultsInfo;
 
+    console.log($scope.resultsInfo)
+
     // Whenever the type is not accusation, this was launched because the game ended. This means the modal
     // is launched for a losing player.
     $scope.isAccusationType = function(){
@@ -72,11 +74,9 @@ app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance, resu
 
     //$scope.winner =
     if($scope.successfulAccusation()) {
-        $scope.winner = true;
-    } else if($scope.isAccusationType() && $scope.resultsInfo.success == false) {
-        $scope.winner = false;
+        $scope.solutionSet = $scope.resultsInfo.solutionSet;
     } else {
-        $scope.winner = false;
+        $scope.solutionSet = null
     }
 
     $scope.continue = function () {

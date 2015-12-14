@@ -46,6 +46,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.awaitingSuggestionResponse == false;
         self.secretPassageAvailable = false;
         self.messageLog = "";
+        self.playerIsWinner = false;
     };
     
     self.startGame = function() {
@@ -79,6 +80,14 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         //game has just started, set my cards
                         if (self.gameStart == false && self.game_board.game_in_play == true) {
                             self.getCardsByPlayerId();
+                        }
+
+                        // Signals game over for player since game was in play and no isn't
+                        if (self.gameStart == true
+                            && self.game_board.game_in_play == false
+                            && !self.playerIsWinner) {
+
+                            self.openGameResultsModal({});
                         }
                         
                         self.gameStart = self.game_board.game_in_play;
@@ -448,7 +457,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             }
             //Accusation
             else {
-                
+                self.sendSelection(selection);
             }
         }, function () {
             });
@@ -479,6 +488,14 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 else { // route == "accuse" returns success
                     //find out if accuse was successful
                     //handle true/false
+                    if(response.data['success'] == true) {
+                        console.log("Good accusation. success response: " + response.data['success']);
+                        self.playerIsWinner = true;
+                        self.openGameResultsModal({type: 'accusation', success: true});
+                    } else {
+                        console.log("Bad accusation. success response: " + response.data['success']);
+                        self.openGameResultsModal({type: 'accusation', success: false});
+                    }
                 }
                 self.getGameBoard();
             },
@@ -529,20 +546,28 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             })
     };
 
-    self.openGameResultsModal = function (type) {
-        var DisputeModal = $uibModal.open({
+    self.openGameResultsModal = function (resultsInfo) {
+        var ResultModal = $uibModal.open({
             animation: true,
             templateUrl: 'scripts/game-results-modal.html',
             controller: 'GameResultsModalCtrl',
             resolve: {
+                resultsInfo: function(){
+                    return resultsInfo;
+                }
             }
         });
 
-        //return disputed suggestion
-        DisputeModal.result.then(function (selection) {
-            //do something with disputed cards
-        }, function () {
-        });
+        ResultModal.result.then(function (type) {
+                if(type == 'endGame') {
+                    console.log("Ending Game");
+                    self.deleteGameBoard();
+                } else if(type == 'losingPlayer') {
+                    console.log("Refresh Game to redirect player to new game screen.");
+                    self.getGameBoard();
+                }
+            }
+        )
     };
     
     //Turned off for developing, calls getGameBoard every 2 seconds

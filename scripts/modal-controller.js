@@ -55,10 +55,40 @@ app.controller('DisputeModalCtrl', function ($scope, $uibModalInstance, cards) {
 
 });
 
-app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance) {
+app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance, resultsInfo) {
 
-    $scope.exit = function () {
+    $scope.resultsInfo = resultsInfo;
+
+    // Whenever the type is not accusation, this was launched because the game ended. This means the modal
+    // is launched for a losing player.
+    $scope.isAccusationType = function(){
+        return $scope.resultsInfo.type == 'accusation';
+    };
+
+    $scope.successfulAccusation = function(){
+        console.log( $scope.isAccusationType && $scope.resultsInfo.success);
+        return $scope.isAccusationType && $scope.resultsInfo.success;
+    };
+
+    //$scope.winner =
+    if($scope.successfulAccusation()) {
+        $scope.winner = true;
+    } else if($scope.isAccusationType() && $scope.resultsInfo.success == false) {
+        $scope.winner = false;
+    } else {
+        $scope.winner = false;
+    }
+
+    $scope.continue = function () {
         $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.endGame = function () {
+        $uibModalInstance.close('endGame');
+    }
+
+    $scope.existLoser = function () {
+        $uibModalInstance.dismiss('losingPlayer');
     };
 
 });

@@ -44,6 +44,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.ableToSuggest = false;
         self.disputingSuggestion = false;
         self.awaitingSuggestionResponse = false;
+        self.suggestionLogged = false;
+        self.disputeLogged = false;
         self.secretPassageAvailable = false;
         self.myDetectiveNotebook = [];
         self.messageLog = "";
@@ -203,6 +205,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise = RestService.postAction('players', id, "move", data);
         self.promise.then(
             function (response) {
+                self.getGameBoard();
                 $log.debug(response);
             },
             function (error) {
@@ -296,22 +299,47 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         self.isMyTurn = false;
                     }
                 }
+            }  
+        }
+        
+        if (self.game_board.awaiting_suggest_response) {
+            if (self.suggestionLogged == false && self.curPlayer.id != id){
+                
+                self.messageLog += self.curPlayer.board_piece.name + " made the suggestion: " + self.game_board.suggestion.cards[0].item_name + ", " + self.game_board.suggestion.cards[1].item_name + ", " + self.game_board.suggestion.cards[2].item_name + ".\n";
+                self.suggestionLogged = true;
             }
-            if (self.game_board.awaiting_suggest_response) {
-                if (self.game_board.suggestion.player.id == id) {
-                    //do dispute    
-                    //this if statement prevents multiple modals from opening
-                    if (self.disputingSuggestion == false) {
-                        self.openDisputeModal(self.game_board.suggestion.cards);
-                        self.disputingSuggestion = true;
-                    }
+
+            if (self.game_board.suggestion.player.id == id) {
+                //do dispute 
+                //this if statement prevents multiple modals from opening
+                if (self.disputingSuggestion == false) {
+                    
+                    var matchingCards = self.findMatchingCards(self.game_board.suggestion.cards);
+                    self.openDisputeModal(matchingCards);
+                    self.disputingSuggestion = true;
                 }
             }
-            if (self.awaitingSuggestionResponse == true && self.game_board.suggest_response) {
+
+        }
+        //handle dispute response
+        if (self.game_board.suggest_response) {
+            self.suggestionLogged = false;
+
+            //if it was me that made the suggestion
+            if (self.awaitingSuggestionResponse == true) {
                 self.awaitingSuggestionResponse = false;
                 self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed your suggestion with " + self.game_board.suggest_response.card.item_name + "\n";
+                self.disputeLogged = true;
                 self.myDetectiveNotebook.push(self.game_board.suggest_response.card);
             }
+
+            if (self.disputeLogged == false && self.curPlayer.id != id) {
+                self.messageLog += self.game_board.suggest_response.player.board_piece.name + " disputed the suggestion!\n";
+                self.disputeLogged = true;
+            }
+        }
+        else {
+            self.disputeLogged = false;
         }
     };
     
@@ -387,10 +415,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             else {
                 self.secretPassageAvailable = false;
             }
-            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.rooms[self.curPlayer.location_id].name + '!\n';
+//            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.rooms[self.curPlayer.location_id].name + '!\n';
         }
         else {
-            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.halls[self.curPlayer.location_id-9].name + '!\n';
+//            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.halls[self.curPlayer.location_id-9].name + '!\n';
         }
         
         
@@ -443,6 +471,18 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     
     self.checkIfAbleToSuggest = function (location) {
         return (location < 9);
+    };
+    
+    self.findMatchingCards = function (suggestionCards) {
+        var cards = [];
+        for (var i=0; i<suggestionCards.length; i++) {
+            for (var j=0; j<self.myCards.length; j++) {
+                if (suggestionCards[i].name == self.myCards[j].name) {
+                    cards.push(suggestionCards[i]);
+                }
+            }
+        }
+        return cards;
     }
     
 
@@ -507,6 +547,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 $log.debug(response);
                 if (route == "suggest") {
                     self.awaitingSuggestionResponse = true;
+                    if (self.playerCount == 1) {
+                        //if player playing by themself, don't bother
+                        self.awaitingSuggestionResponse = false;
+                    }
+                    self.messageLog += "You've made the suggestion: " + selection.suspect.item_name + " with the " + selection.weapon.item_name + " in the " + selection.room.item_name + "\n";
                 }
                 else { // route == "accuse" returns success
                     //find out if accuse was successful

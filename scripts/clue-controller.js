@@ -484,7 +484,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             function (response) {
                 console.log(response);
                 if (route == "suggest") {
-                self.awaitingSuggestionResponse = true;
+                    self.awaitingSuggestionResponse = true;
                 }
                 else { // route == "accuse" returns success
                     //find out if accuse was successful
@@ -521,10 +521,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         //return disputed suggestion
         DisputeModal.result.then(function (card) {
             self.sendDispute(card);
-            console.log("Sending Dispute with " + card.name);
         }, function () {
+            //modal cancelled, so select first matching card and send it
+            var card = self.game_board.suggestion.cards[0];
             self.sendDispute(card);
-            console.log("Sending Dispute with " + card.name);
             }
         )
     };

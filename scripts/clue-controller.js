@@ -69,7 +69,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         self.serverPlayers = self.game_board.players;
                         self.playerCount = self.serverPlayers.length;
                         
-                        console.log(self.game_board);
+                        $log.debug(self.game_board);
                         
                         //if player joins after game already started
                         if (self.game_board.game_in_play && !self.myPlayerAdded) {
@@ -123,7 +123,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 self.getAllCards();
-                console.log(response);
+                $log.debug(response);
                 self.getGameBoard();
             },
             function (error) {
@@ -142,7 +142,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.serverPlayers = response.data;
                 self.playerCount = self.serverPlayers.length;
                 self.setPiecesTaken();
-                console.log(self.serverPlayers);
+                $log.debug(self.serverPlayers);
                 self.findMyPlayerId();
                 self.myPlayerAdded = true;
             },
@@ -182,7 +182,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise.then(
             function (response) {
                 self.cards = response.data;
-                console.log(self.cards);
+                $log.debug(self.cards);
                 
                 //adding setPieces because cards don't load until after it would normally be called on startup
                 self.setPiecesTaken();
@@ -198,11 +198,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             "player_id": id,
             "location_id": location
         };
-        console.log(data);
+        $log.debug(data);
         self.promise = RestService.postAction('players', id, "move", data);
         self.promise.then(
             function (response) {
-                console.log(response);
+                $log.debug(response);
             },
             function (error) {
                 alert("Error making move to " + location);
@@ -399,7 +399,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.promise = RestService.postAction('players', id, "end_turn", '');
         self.promise.then(
             function (response) {
-                console.log(response);
+                $log.debug(response);
                 self.getGameBoard();
                 self.isMyTurn = false;
                 self.moveMade = false;
@@ -496,11 +496,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         else 
             route = "accuse";
         
-        console.log(data);
+        $log.debug(data);
         self.promise = RestService.postAction('players', id, route, data);
         self.promise.then(
             function (response) {
-                console.log(response);
+                $log.debug(response);
                 if (route == "suggest") {
                     self.awaitingSuggestionResponse = true;
                 }
@@ -508,11 +508,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     //find out if accuse was successful
                     //handle true/false
                     if(response.data['success'] == true) {
-                        console.log("Good accusation. success response: " + response.data['success']);
+                        $log.debug("Good accusation. success response: " + response.data['success']);
                         self.playerIsWinner = true;
                         self.openGameResultsModal({type: 'accusation', success: true, solutionSet: self.solutionSet});
                     } else {
-                        console.log("Bad accusation. success response: " + response.data['success']);
+                        $log.debug("Bad accusation. success response: " + response.data['success']);
                         self.openGameResultsModal({type: 'accusation', success: false});
                     }
                 }
@@ -552,11 +552,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             "card_id": card.name
         };
         
-        console.log(data);
+        $log.debug(data);
         self.promise = RestService.postAction('players', id, "answer_suggestion", data);
         self.promise.then(
             function (response) {
-                console.log(response);
+                $log.debug(response);
                 self.getGameBoard();
                 self.disputingSuggestion = false;
             },
@@ -579,10 +579,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
 
         ResultModal.result.then(function (type) {
                 if(type == 'endGame') {
-                    console.log("Ending Game");
+                    $log.debug("Ending Game");
                     self.deleteGameBoard();
                 } else if(type == 'losingPlayer') {
-                    console.log("Refresh Game to redirect player to new game screen.");
+                    $log.debug("Refresh Game to redirect player to new game screen.");
                     self.getGameBoard();
                 }
             }

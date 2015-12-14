@@ -6,8 +6,6 @@ app.directive("gameboard", function() {
             gamePieces: "="
         },
         link: function($scope, $element) {
-            console.log($scope.players);
-            
             var canvas = $element[0];
             var ctx = canvas.getContext('2d');
             

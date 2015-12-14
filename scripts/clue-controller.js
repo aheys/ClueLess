@@ -431,6 +431,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     return self.cards.suspects;
                 },
                 weapons: function () {
+                    console.info('===== WEAPONS ' + JSON.stringify(self.cards.weapons));
                     return self.cards.weapons;
                 },
                 room: function () {

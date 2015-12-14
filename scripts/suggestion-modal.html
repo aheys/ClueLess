@@ -33,18 +33,18 @@
             Room <span class="caret"></span>
         </button>
         <ul class="uib-dropdown-menu" role="menu" aria-labelledby="Room">
-            <li role="menuitem" ng-repeat="room in rooms">
+            <li role="menuitem">
                 <a href="" ng-click="addRoom(room)">
                     <image ng-src="assets/PNG/Cards/room/{{room.name}}.png" />
                  </a>
             </li>
         </ul>
     </div>
-    <table>
+    <table class="col-lg-9">
         <tr>
-            <th>Suspect</th>
-            <th>Weapon</th>
-            <th>Room</th>
+            <th class="col-lg-3">Suspect</th>
+            <th class="col-lg-3">Weapon</th>
+            <th class="col-lg-3">Room</th>
         </tr>
         <tr>
             <td><image ng-src="assets/PNG/Cards/suspect/{{selection.suspect.item_name}}.png" /></td>

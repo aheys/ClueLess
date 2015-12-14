@@ -1,10 +1,10 @@
 app.factory('RestService', ['$http', '$q', '$log', function ($http, $q, $log) {
     
     //Heroku Server
-    var url = 'https://clueless-server.herokuapp.com/';
+//    var url = 'https://clueless-server.herokuapp.com/';
     
     //Local Ruby Server
-//    var url = 'http://localhost:3000/';
+    var url = 'http://localhost:3000/';
     
     var services = {
         get: function (name) {

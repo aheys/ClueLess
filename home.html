@@ -23,6 +23,7 @@
 </head>
 <body ng-controller="clueCtrl as ctrl" cg-busy="{promise:ctrl.promise,templateUrl:ctrl.templateUrl,message:ctrl.message,
                    backdrop:ctrl.backdrop,delay:ctrl.delay,minDuration:ctrl.minDuration}">
+
 <!-- Debugging Toolbar -->
 <nav class="navbar navbar-default">
     <div class="container">
@@ -120,7 +121,7 @@
                 <canvas gameboard id="myCanvas" width="800" height="600" players="ctrl.serverPlayers" game-pieces="ctrl.cards.suspects">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
-                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                <div class="btn-toolbar" role="toolbar" aria-label="..." ng-if="!ctrl.awaitingSuggestionResponse">
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn btn-primary" ng-click="ctrl.makeMove('left')" ng-disabled="!ctrl.isMyTurn || ctrl.moveMade">
                             <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>

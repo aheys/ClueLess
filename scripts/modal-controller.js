@@ -37,27 +37,22 @@ app.controller('SuggestionModalCtrl', function ($scope, $uibModalInstance, type,
 
 //Dispute Modal Controller
 //passes in an array of cards that the user can dispute a suggestion made with
-app.controller('DisputeModalCtrl', function ($scope, $uibModalInstance) {
+app.controller('DisputeModalCtrl', function ($scope, $uibModalInstance, cards) {
 
-//    $scope.disputableCards = disputableCards;
+    $scope.cards = cards;
+
+    $scope.selected = $scope.cards[0];
     
-    //filler 
-    $scope.items = ['item1', 'item2', 'item3'];
-    $scope.selected = {
-        item: $scope.items[0]
-    };
+    $scope.select = function (card) {
+        $scope.selected = card;
+    }
 
 
     $scope.ok = function () {
-        $uibModalInstance.close($scope.selection);
+        console.log("OKing with " + $scope.selected.name);
+        $uibModalInstance.close($scope.selected);
     };
 
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
-    
-    $scope.selection = {};
-    
 });
 
 app.controller('GameResultsModalCtrl', function ($scope, $uibModalInstance) {

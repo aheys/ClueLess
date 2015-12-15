@@ -302,6 +302,9 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     self.suggestionLogged = false;
                     self.accusationLogged = false;
                     
+                    //this line shouldn't be needed, but built in to protect for errors
+                    self.awaitingSuggestionResponse = false;
+                    
                     if (self.curPlayer.id == id) {
                         var location = self.curPlayer.location_id;
                         self.isMyTurn = true;

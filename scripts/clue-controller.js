@@ -98,9 +98,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         if (self.gameStart == true
                             && self.game_board.game_in_play == false
                             && self.winner) {
-                            console.log("Winner");
-                            console.log(self.winner);
-                            console.log(self.myPlayer);
                             if(!self.reusltesModalOpen) {
                                 if(self.winner.board_piece.item_name != self.myPlayer) {
                                     self.openGameResultsModal({solutionSet: self.solutionSet, winner: self.winner});

@@ -50,9 +50,9 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.secretPassageAvailable = false;
         self.myDetectiveNotebook = [];
         self.messageLog = "";
-        self.playerIsWinner = false;
-        self.playerIsLoser = false;
+        self.winner = null;
         self.solutionSet = null;
+        self.reusltesModalOpen = false;
     };
     
     self.startGame = function() {
@@ -73,6 +73,8 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         self.game_board = response.data[0];
                         self.serverPlayers = self.game_board.players;
                         self.playerCount = self.serverPlayers.length;
+
+                        self.winner = self.game_board.winner;
                         
                         $log.debug(self.game_board);
                         
@@ -95,9 +97,18 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         // Signals game over for player since game was in play and no isn't
                         if (self.gameStart == true
                             && self.game_board.game_in_play == false
-                            && !self.playerIsWinner) {
+                            && self.winner) {
+                            console.log("Winner");
+                            console.log(self.winner);
+                            console.log(self.myPlayer);
+                            if(!self.reusltesModalOpen) {
+                                if(self.winner.board_piece.item_name != self.myPlayer) {
+                                    self.openGameResultsModal({solutionSet: self.solutionSet, winner: self.winner});
+                                } else {
+                                    self.openGameResultsModal({type: 'accusation', success: true, solutionSet: self.solutionSet});
+                                }
+                            }
 
-                            self.openGameResultsModal({solutionSet: self.solutionSet});
                         }
 
                         self.gameStart = self.game_board.game_in_play;
@@ -598,13 +609,11 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                     //handle true/false
                     if(response.data['success'] == true) {
                         $log.debug("Good accusation. success response: " + response.data['success']);
-                        self.playerIsWinner = true;
                         self.openGameResultsModal({type: 'accusation', success: true, solutionSet: self.solutionSet});
                         self.messageLog += "You've made a successful accusation. Congratulations!\n";
                     } else {
                         $log.debug("Bad accusation. success response: " + response.data['success']);
-                        self.openGameResultsModal({type: 'accusation', success: false});
-                        self.playerIsLoser = true;
+                        self.openGameResultsModal({type: 'accusation', success: false, solutionSet: self.solutionSet, winner: self.winner});
                         self.messageLog += "You've made an incorrect accusation. You have lost the game. Please remain in the game to dispute other players' cards.\n";
                     }
                     
@@ -660,6 +669,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
 
     self.openGameResultsModal = function (resultsInfo) {
+        self.reusltesModalOpen = true;
         var ResultModal = $uibModal.open({
             animation: true,
             templateUrl: 'scripts/game-results-modal.html',
@@ -681,6 +691,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         });
 
         ResultModal.result.then(function (type) {
+            self.reusltesModalOpen = false;
                 if(type == 'endGame') {
                     $log.debug("Ending Game");
                     self.deleteGameBoard();

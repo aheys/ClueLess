@@ -66,6 +66,8 @@ app.controller('GameResultsModalCtrl', function ($scope, $log, $uibModalInstance
 
     $scope.solutionSet = $scope.resultsInfo.solutionSet;
 
+    $scope.winner = $scope.resultsInfo.winner;
+
     $log.debug($scope.resultsInfo);
 
     // Whenever the type is not accusation, this was launched because the game ended. This means the modal

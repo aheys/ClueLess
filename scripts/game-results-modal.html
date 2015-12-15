@@ -11,7 +11,7 @@
             </div>
             <div ng-hide="successfulAccusation()">
                 <h2>I'm Sorry!</h2>
-                <h4>You have made an incorrect accusation.</h4>
+                <h4>You have made an incorrect accusation. You have lost the game.</h4>
                 <h4>Please stay in the game to dispute other player's suggestions.</h4>
             </div>
         </div>
@@ -20,7 +20,15 @@
             <h3>The game is over and you are not the winner.</h3>
             <h4>Try again next time!</h4>
         </div>
+
+        <div ng-show="winner">
+            <h2>Winner:</h2>
+            <div>
+                <image style="max-height:220px;" ng-src="assets/PNG/Cards/suspect/{{winner.board_piece.name}}.png" />
+            </div>
+        </div>
         <div ng-show="solutionSet">
+            <h2>Solution</h2>
             <table style="width: 100%;">
                 <tr>
                     <th style="width: 33%; text-align: center">Weapon:</th>

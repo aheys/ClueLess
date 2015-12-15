@@ -343,6 +343,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                 self.messageLog += self.curPlayer.board_piece.name + " made the suggestion: " + self.game_board.suggestion.cards[0].item_name + ", " + self.game_board.suggestion.cards[1].item_name + ", " + self.game_board.suggestion.cards[2].item_name + ".\n";
                 self.suggestionLogged = true;
             }
+            
 
             //if I'm the one that has to respond to the suggestion
             if (self.game_board.suggestion.player.id == id) {
@@ -465,10 +466,6 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
             else {
                 self.secretPassageAvailable = false;
             }
-//            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.rooms[self.curPlayer.location_id].name + '!\n';
-        }
-        else {
-//            self.messageLog+= self.curPlayer.board_piece.name + ' is moving ' + direction + ' to ' + self.game_board.board.halls[self.curPlayer.location_id-9].name + '!\n';
         }
         
         
@@ -515,6 +512,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.suggestionMade = false;
         
         //update client position
+        self.curPlayer.location_id = location;
         var obj = ClientService.MapLocationIdToXY(location);
         self.curPlayer.x = obj.x;
         self.curPlayer.y = obj.y;

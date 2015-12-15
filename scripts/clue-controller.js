@@ -50,9 +50,10 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         self.secretPassageAvailable = false;
         self.myDetectiveNotebook = [];
         self.messageLog = "";
+        self.playerIsLoser = false;
         self.winner = null;
         self.solutionSet = null;
-        self.reusltesModalOpen = false;
+        self.resultsModalOpen = false;
     };
     
     self.startGame = function() {
@@ -95,11 +96,12 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
                         }
 
                         // Signals game over for player since game was in play and no isn't
-                        if (self.gameStart == true
-                            && self.game_board.game_in_play == false
-                            && self.winner) {
-                            if(!self.reusltesModalOpen) {
-                                if(self.winner.board_piece.item_name != self.myPlayer) {
+                        if (self.gameStart == true && self.game_board.game_in_play == false && self.winner) {
+
+                            self.playerIsLoser = self.winner.board_piece.item_name != self.myPlayer;
+
+                            if(!self.resultsModalOpen) {
+                                if(self.playerIsLoser) {
                                     self.openGameResultsModal({solutionSet: self.solutionSet, winner: self.winner});
                                 } else {
                                     self.openGameResultsModal({type: 'accusation', success: true, solutionSet: self.solutionSet});
@@ -669,7 +671,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
     };
 
     self.openGameResultsModal = function (resultsInfo) {
-        self.reusltesModalOpen = true;
+        self.resultsModalOpen = true;
         var ResultModal = $uibModal.open({
             animation: true,
             templateUrl: 'scripts/game-results-modal.html',
@@ -691,7 +693,7 @@ app.controller("clueCtrl", function($scope, $log, $interval, $uibModal, ClientSe
         });
 
         ResultModal.result.then(function (type) {
-            self.reusltesModalOpen = false;
+            self.resultsModalOpen = false;
                 if(type == 'endGame') {
                     $log.debug("Ending Game");
                     self.deleteGameBoard();
